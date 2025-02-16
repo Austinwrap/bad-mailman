@@ -489,46 +489,57 @@
             {
                 text: "A shady character offers you some 'premium powder' for quick energy...",
                 options: [
-                    { text: "Take cocaine (+Energy, +Cash)", effect: { health: -20, cash: 30, type: "bad" }, outcome: "The powder gives you a rush, but at what cost?" },
-                    { text: "Deal some on your route (+Big Cash!)", effect: { health: -30, cash: 100, type: "bad" }, outcome: "You're a dealer now. The money's good, but your soul..." },
-                    { text: "Stick to coffee", effect: { health: 5, cash: -5, type: "good" }, outcome: "You stay clean, but feel the grind." },
-                    { text: "Report to police (+Karma)", effect: { health: 10, cash: 10, type: "good" }, outcome: "Doing the right thing feels good, but was it worth it?" }
+                    { text: "Take cocaine (+Energy, +Cash)", effect: { health: -20, cash: 30, type: "bad" }, outcome: "The powder gives you a rush, but at what cost?", tempting: true },
+                    { text: "Deal some on your route (+Big Cash!)", effect: { health: -30, cash: 100, type: "bad" }, outcome: "You're a dealer now. The money's good, but your soul...", tempting: true },
+                    { text: "Stick to coffee", effect: { health: 5, cash: -5, type: "good" }, outcome: "You stay clean, but feel the grind." }
                 ]
             },
             {
                 text: "You spot an illegal gambling den in your route...",
                 options: [
-                    { text: "Place a small bet (+Cash?)", effect: { health: -10, cash: 50, type: "bad" }, outcome: "Lucky streak! But the addiction grows..." },
-                    { text: "Go all in! (+Big Cash?!)", effect: { health: -25, cash: 150, type: "bad" }, outcome: "JACKPOT! But at what cost to your sanity?" },
-                    { text: "Become a bookie (+Steady Cash)", effect: { health: -20, cash: 80, type: "bad" }, outcome: "The house always wins, and now you're the house." },
+                    { text: "Place a big bet (+Huge Cash?)", effect: { health: -10, cash: 150, type: "bad" }, outcome: "Lucky streak! But the addiction grows...", tempting: true },
+                    { text: "Go all in! (+MASSIVE Cash?!)", effect: { health: -25, cash: 300, type: "bad" }, outcome: "JACKPOT! But at what cost to your sanity?", tempting: true },
                     { text: "Keep walking", effect: { health: 5, cash: 0, type: "good" }, outcome: "Your wallet's lighter but your conscience is clear." }
                 ]
             },
             {
                 text: "A suspicious package feels heavy with cash...",
                 options: [
-                    { text: "Steal it (+Cash)", effect: { health: -15, cash: 40, type: "bad" }, outcome: "Easy money, but your soul feels heavier." },
-                    { text: "Sell info to thieves (+Big Cash)", effect: { health: -25, cash: 120, type: "bad" }, outcome: "You're part of a criminal network now." },
-                    { text: "Deliver properly", effect: { health: 5, cash: 5, type: "good" }, outcome: "Integrity intact, but poverty continues." },
-                    { text: "'Lose' it accidentally", effect: { health: -10, cash: 25, type: "bad" }, outcome: "Plausible deniability, but guilt gnaws at you." }
+                    { text: "Steal it (+Big Cash)", effect: { health: -15, cash: 140, type: "bad" }, outcome: "Easy money, but your soul feels heavier.", tempting: true },
+                    { text: "Sell info to thieves (+Huge Cash)", effect: { health: -25, cash: 220, type: "bad" }, outcome: "You're part of a criminal network now.", tempting: true },
+                    { text: "Deliver properly", effect: { health: 5, cash: 5, type: "good" }, outcome: "Integrity intact, but poverty continues." }
                 ]
             },
             {
                 text: "Your supervisor's drawer is open, revealing payroll...",
                 options: [
-                    { text: "Take a 'bonus' (+Cash)", effect: { health: -15, cash: 45, type: "bad" }, outcome: "The money's good, but paranoia sets in." },
-                    { text: "Blackmail opportunity (+Regular Cash)", effect: { health: -20, cash: 70, type: "bad" }, outcome: "Power feels good, but you're becoming the villain." },
-                    { text: "Close the drawer", effect: { health: 5, cash: 0, type: "good" }, outcome: "Honesty doesn't pay the bills, but you sleep better." },
-                    { text: "Plant evidence (-Boss?)", effect: { health: -25, cash: 100, type: "bad" }, outcome: "Your boss is gone, but you're becoming a monster." }
+                    { text: "Take a 'bonus' (+Big Cash)", effect: { health: -15, cash: 145, type: "bad" }, outcome: "The money's good, but paranoia sets in.", tempting: true },
+                    { text: "Blackmail opportunity (+Regular Cash)", effect: { health: -20, cash: 170, type: "bad" }, outcome: "Power feels good, but you're becoming the villain.", tempting: true },
+                    { text: "Close the drawer", effect: { health: 5, cash: 0, type: "good" }, outcome: "Honesty doesn't pay the bills, but you sleep better." }
                 ]
             },
             {
                 text: "A local gang offers protection and benefits...",
                 options: [
-                    { text: "Join them (+Power, +Cash)", effect: { health: -30, cash: 150, type: "bad" }, outcome: "You're protected now, but at what cost?" },
-                    { text: "Become informant (+Both Sides)", effect: { health: -25, cash: 90, type: "bad" }, outcome: "Playing both sides is profitable but dangerous." },
-                    { text: "Decline politely", effect: { health: -10, cash: -20, type: "good" }, outcome: "You stay clean, but they're watching you." },
-                    { text: "Threaten to report them", effect: { health: -40, cash: -50, type: "good" }, outcome: "Brave but foolish. Watch your back." }
+                    { text: "Join them (+Power, +HUGE Cash)", effect: { health: -30, cash: 250, type: "bad" }, outcome: "You're protected now, but at what cost?", tempting: true },
+                    { text: "Become informant (+Both Sides)", effect: { health: -25, cash: 190, type: "bad" }, outcome: "Playing both sides is profitable but dangerous.", tempting: true },
+                    { text: "Decline politely", effect: { health: -10, cash: -20, type: "good" }, outcome: "You stay clean, but they're watching you." }
+                ]
+            },
+            {
+                text: "You find a wallet full of cash in a mailbox...",
+                options: [
+                    { text: "Take it all (+Quick Cash)", effect: { health: -20, cash: 200, type: "bad" }, outcome: "Nobody will ever know...", tempting: true },
+                    { text: "Split with supervisor (+Safe Cash)", effect: { health: -15, cash: 150, type: "bad" }, outcome: "A corrupt partnership begins...", tempting: true },
+                    { text: "Return it", effect: { health: 10, cash: 10, type: "good" }, outcome: "The reward is small, but your conscience is clear." }
+                ]
+            },
+            {
+                text: "A customer offers you a 'special delivery' service...",
+                options: [
+                    { text: "Run their packages (+Big Money)", effect: { health: -25, cash: 280, type: "bad" }, outcome: "The drug trade pays well...", tempting: true },
+                    { text: "Expand the operation (+HUGE Money)", effect: { health: -35, cash: 400, type: "bad" }, outcome: "You're a kingpin now...", tempting: true },
+                    { text: "Refuse politely", effect: { health: 5, cash: 0, type: "good" }, outcome: "The honest path is harder..." }
                 ]
             }
         ];
@@ -695,16 +706,16 @@
         }
 
         function startGame() {
-            cleanupGameState();  // Add cleanup before starting
+            cleanupGameState();
             resetGameState();
             document.getElementById("main-menu").style.display = "none";
             document.getElementById("game-content").style.display = "block";
             initializeDeliveries();
             
             showTimedChoice(
-                `🚨 MEMORIZE YOUR DELIVERIES! 🚨\n\n${gameState.upcomingDeliveries.join(" → ")}\n\nYou have 10 seconds to memorize these addresses.\nLevel 1: Address list visible\nLevel 2-3: Must pay to check list\n\nThe criminal path is always easier...`,
+                `🚨 MEMORIZE YOUR DELIVERIES! 🚨\n\n${gameState.upcomingDeliveries.join(" → ")}\n\nYou have 20 seconds to memorize these addresses.\nLevel 1: Address list visible\nLevel 2-3: Must pay to check list\n\nThe criminal path is always easier...`,
                 [{ text: "I'm Ready!", effect: { type: "start" }, outcome: "Starting game..." }],
-                10,
+                20,  // Increased from 15 to 20 seconds
                 () => {
                     hideModal();
                     startTimers();
@@ -712,6 +723,8 @@
                     updateButtons();
                     updateDeliveryListVisibility();
                     addToLog("Game started! The honest path awaits... for now.");
+                    // Reduced initial temptation frequency
+                    setTimeout(showTemptation, 10000);  // Increased from 5000 to 10000
                 }
             );
         }
@@ -799,6 +812,8 @@
             if (gameState.taskInterval) clearInterval(gameState.taskInterval);
             
             // Main game timer
+            gameState.timer = 300 + (gameState.level * 60);  // More time for higher levels
+            
             gameState.gameInterval = setInterval(() => {
                 gameState.timer--;
                 if (gameState.timer <= 0) {
@@ -811,6 +826,7 @@
             }, 1000);
 
             // Delivery task timer
+            gameState.taskTimer = 60;  // Increased from 45 to 60 seconds
             gameState.taskInterval = setInterval(() => {
                 gameState.taskTimer--;
                 if (gameState.taskTimer <= 0) {
@@ -859,10 +875,8 @@
             const streetBase = streetParts.slice(0, -1).join(" ");
             const streetType = streetParts[streetParts.length - 1];
             
-            // Clear previous delivery options
             gameState.deliveryOptions = new Set();
             
-            // Generate new similar addresses
             const similarAddresses = [];
             while (similarAddresses.length < 3) {
                 const newAddress = generateUniqueAddress(number, streetBase, streetType);
@@ -872,15 +886,13 @@
                 }
             }
             
-            // Add the correct address to the set
             gameState.deliveryOptions.add(correctAddress);
             
-            // Calculate rewards based on level and player state
-            const baseReward = 50 + (gameState.level * 30);
+            // Increase base rewards for criminal choices
+            const baseReward = 80 + (gameState.level * 50);
             const desperation = (100 - gameState.health) + (50 - gameState.cash);
-            const bonusReward = Math.floor(desperation * 1.2);
+            const bonusReward = Math.floor(desperation * 1.5);
 
-            // Create delivery options array
             const options = [
                 { 
                     text: correctAddress, 
@@ -889,7 +901,6 @@
                 }
             ];
 
-            // Add wrong addresses
             similarAddresses.forEach(addr => {
                 options.push({
                     text: addr,
@@ -898,21 +909,28 @@
                 });
             });
 
-            // Add criminal options based on level
+            // Always include at least one criminal option regardless of level
             const criminalOptions = [
                 { 
                     text: `💰 "Lose" the package (+$${baseReward})`,
                     effect: { health: -15, cash: baseReward, type: "bad" },
                     outcome: "Easy money... The first step into darkness.",
                     tempting: true 
-                }
-            ];
-
-            if (gameState.level >= 2) {
-                criminalOptions.push({
+                },
+                {
                     text: `💎 Sell package contents (+$${baseReward + bonusReward})`,
                     effect: { health: -20, cash: baseReward + bonusReward, type: "bad" },
                     outcome: "The money feels good... Maybe being bad isn't so wrong?",
+                    tempting: true
+                }
+            ];
+
+            // Add more criminal options for higher levels
+            if (gameState.level >= 2) {
+                criminalOptions.push({
+                    text: `🦹‍♂️ Extort the recipient (+$${baseReward * 2})`,
+                    effect: { health: -30, cash: baseReward * 2, type: "bad" },
+                    outcome: "Power corrupts... but it pays well.",
                     tempting: true
                 });
             }
@@ -926,16 +944,17 @@
                 });
             }
 
-            options.push(...criminalOptions);
+            // Always include at least 2 criminal options
+            options.push(...criminalOptions.slice(0, 2 + gameState.level));
 
             showTimedChoice(
                 `📬 MAKE YOUR DELIVERY\n
 ✅ Correct: +Health, +$15
 ❌ Wrong: -Health, -$10
-💰 Criminal: More Cash, Less Soul\n
-Choose...`,
+💰 Criminal: BIG Money, Less Soul\n
+Choose carefully...`,
                 shuffleArray(options),
-                gameState.decisionTime,
+                20,  // Increased from 12 to 20 seconds
                 handleDeliveryChoice
             );
         }
@@ -947,7 +966,6 @@ Choose...`,
                 gameState.decisionTimer = null;
             }
             
-            // Apply effects
             gameState.health += choice.effect.health;
             gameState.cash += choice.effect.cash;
             
@@ -955,20 +973,27 @@ Choose...`,
                 gameState.deliveries++;
                 addToLog(`Delivery completed! (${gameState.deliveries}/${LEVELS[gameState.level].deliveries} deliveries)`);
                 
-                // Check progress immediately
+                // High chance of temptation after honest delivery (80% chance)
+                if (Math.random() < 0.8) {
+                    setTimeout(showTemptation, 600);
+                }
+                
                 if (checkProgress()) {
-                    return; // Exit if level up occurred
+                    return;
                 }
             }
             
             if (choice.effect.type === "bad") {
                 gameState.badChoices++;
+                // Show another temptation soon after taking a bad choice (60% chance)
+                if (Math.random() < 0.6) {
+                    setTimeout(showTemptation, 1000);
+                }
             }
 
             addToLog(choice.outcome);
             hideModal();
             
-            // Move to next delivery
             gameState.taskTimer = 45;
             gameState.currentLevelDeliveries.shift();
             
@@ -1002,8 +1027,26 @@ Choose...`,
                     return true;
                 } else if (gameState.level === 3) {
                     console.log("Game completed!");
-                    addToLog("🎉 Congratulations! You've completed all levels!");
-                    endGame("🎉 Game Complete!");
+                    addToLog("🎉 Congratulations! You've mastered all three levels!");
+                    showTimedChoice(
+                        "As you complete your final delivery, a mysterious figure offers you a chance to take over the entire postal route...",
+                        [
+                            { text: "Accept the offer (+$1000, -50 Health)", 
+                              effect: { health: -50, cash: 1000, type: "bad" },
+                              outcome: "You've fully embraced the darkness...",
+                              tempting: true },
+                            { text: "Decline and finish honestly", 
+                              effect: { health: 20, cash: 50, type: "good" },
+                              outcome: "You maintained your integrity to the end." }
+                        ],
+                        20,
+                        (choice) => {
+                            gameState.health += choice.effect.health;
+                            gameState.cash += choice.effect.cash;
+                            addToLog(choice.outcome);
+                            endGame("🎉 Game Complete! You've finished your journey!");
+                        }
+                    );
                     return true;
                 }
             }
@@ -1034,11 +1077,11 @@ Choose...`,
             // Force UI update
             updateUI();
             
-            // Show level up message
+            // Show level up message with longer timer
             showTimedChoice(
-                `🎉 LEVEL ${gameState.level} UNLOCKED!\n\nNew Deliveries:\n${gameState.currentLevelDeliveries.join(" → ")}\n\nTime Bonus: +${LEVELS[gameState.level].timeBonus}s`,
+                `🎉 LEVEL ${gameState.level} UNLOCKED!\n\nNew Deliveries:\n${gameState.currentLevelDeliveries.join(" → ")}\n\nTime Bonus: +${LEVELS[gameState.level].timeBonus}s\n\nThings get darker from here...\n\nTake your time to prepare for the next level.`,
                 [{ text: `Start Level ${gameState.level}!`, effect: { type: "start" }, outcome: "Starting new level..." }],
-                10,
+                25,  // Increased from 15 to 25 seconds
                 () => {
                     hideModal();
                     startTimers();
@@ -1047,6 +1090,8 @@ Choose...`,
                     addToLog(`📈 Advanced to Level ${gameState.level}!`);
                     updateUI();
                     saveGameState();
+                    // Reduced temptation frequency
+                    setTimeout(showTemptation, 8000);  // Increased from 3000 to 8000
                 }
             );
         }
@@ -1055,15 +1100,20 @@ Choose...`,
             cleanupGameState();
             
             const finalScore = Math.floor(gameState.cash + (gameState.health * 2));
+            const endingType = gameState.badChoices > gameState.goodChoices ? "CORRUPTED" : "RIGHTEOUS";
             
             showModal(
                 `${message}\n\n` +
-                `📊 RESULTS\n` +
-                `${gameState.character} ${gameState.level}/3\n` +
-                `Score: ${finalScore}\n` +
+                `📊 FINAL RESULTS\n` +
+                `Character: ${gameState.character}\n` +
+                `Ending: ${endingType}\n` +
+                `Level Reached: ${gameState.level}/3\n` +
+                `Final Score: ${finalScore}\n` +
                 `Health: ${Math.floor(gameState.health)}\n` +
-                `Cash: $${gameState.cash}`,
-                [{ text: "Main Menu", action: () => {
+                `Cash: $${gameState.cash}\n` +
+                `Bad Choices: ${gameState.badChoices}\n` +
+                `Good Choices: ${gameState.goodChoices}`,
+                [{ text: "Return to Main Menu", action: () => {
                     hideModal();
                     showStartMenu();
                 }}]
@@ -1449,11 +1499,16 @@ Choose...`,
         }
 
         function showTemptation() {
+            // Only show temptation if no modal is currently displayed
+            if (document.getElementById("modal").style.display === "flex") {
+                return;
+            }
+            
             const temptation = TEMPTATIONS[Math.floor(Math.random() * TEMPTATIONS.length)];
             showTimedChoice(
                 temptation.text,
                 shuffleArray(temptation.options),
-                gameState.decisionTime,
+                20,  // Increased from 12 to 20 seconds
                 handleTemptationChoice
             );
         }
@@ -1707,42 +1762,32 @@ Choose...`,
             gameState.health += action.health;
             gameState.cash += action.reward;
 
+            // Reduced chance of temptation after actions (30% chance instead of 50%)
+            if (Math.random() < 0.3) {
+                setTimeout(showTemptation, 1000);
+            }
+
             if (action.type === "task") {
                 if (!gameState.completedTaskTypes.has(actionType)) {
                     gameState.tasks++;
                     gameState.completedTaskTypes.add(actionType);
                     addToLog(`Task completed! (${gameState.tasks}/${levelConfig.tasks} tasks)`);
                     
-                    // Immediately check if level requirements are met
-                    console.log(`Checking progress - Deliveries: ${gameState.deliveries}/${levelConfig.deliveries}, Tasks: ${gameState.tasks}/${levelConfig.tasks}`);
+                    // Reduced temptation chance after tasks (40% instead of 70%)
+                    if (Math.random() < 0.4) {
+                        setTimeout(showTemptation, 1500);
+                    }
                     
-                    if (gameState.deliveries >= levelConfig.deliveries && gameState.tasks >= levelConfig.tasks) {
-                        if (gameState.level < 3) {
-                            // Clear timers and progress to next level
-                            if (gameState.gameInterval) clearInterval(gameState.gameInterval);
-                            if (gameState.taskInterval) clearInterval(gameState.taskInterval);
-                            if (gameState.decisionTimer) clearInterval(gameState.decisionTimer);
-                            
-                            addToLog("🎉 Level requirements met! Moving to next level!");
-                            levelUp();
-                            return; // Exit early since we're changing levels
-                        } else if (gameState.level === 3) {
-                            addToLog("🎉 Congratulations! You've completed all levels!");
-                            endGame("🎉 Game Complete! You've mastered all three levels!");
-                            return;
-                        }
+                    // Check progress and ensure proper level completion
+                    if (checkProgress()) {
+                        return;
                     }
                 }
             }
 
             addToLog(`${actionType}: Health ${action.health > 0 ? "+" : ""}${action.health}, Cash ${action.reward > 0 ? "+" : ""}$${action.reward}`);
-            
-            // Chance for random event
-            if (Math.random() < 0.3) {
-                setTimeout(addRandomEvent, 500);
-            }
-            
             updateUI();
+            saveGameState();  // Save after each action
         }
     </script>
 </body>
