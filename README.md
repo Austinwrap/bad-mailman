@@ -12,19 +12,46 @@
         body {
             margin: 0;
             padding: 0;
-            background: linear-gradient(135deg, #b22234 0%, #3c3b6e 100%);
+            background: linear-gradient(135deg, #b22234 0%, #ffffff 50%, #3c3b6e 100%);
             color: #fff;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             text-align: center;
+            min-height: 100vh;
+            background-attachment: fixed;
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+        }
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
         #game-container {
             max-width: 800px;
             margin: 20px auto;
             padding: 20px;
-            background: rgba(255, 255, 255, 0.95);
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(178, 34, 52, 0.1) 50%, rgba(60, 59, 110, 0.2) 100%);
             border: 3px solid #b22234;
             border-radius: 10px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.7);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.7);
+            position: relative;
+            overflow: hidden;
+        }
+        #game-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                linear-gradient(45deg, 
+                    rgba(178, 34, 52, 0.1) 0%,
+                    rgba(255, 255, 255, 0.2) 50%,
+                    rgba(60, 59, 110, 0.1) 100%
+                );
+            pointer-events: none;
+            z-index: 1;
         }
         h1 {
             color: #3c3b6e;
@@ -35,7 +62,7 @@
             display: grid;
             grid-template-columns: repeat(2, 1fr);
             gap: 10px;
-            background: #f7f7f7;
+            background: rgba(255, 255, 255, 0.95);
             border: 2px solid #b22234;
             padding: 15px;
             margin-bottom: 15px;
@@ -45,6 +72,8 @@
         .stat-item {
             font-size: 1.2em;
             font-weight: bold;
+            color: #3c3b6e;
+            text-shadow: 1px 1px 0px rgba(255,255,255,0.5);
         }
         #actions {
             display: grid;
@@ -103,7 +132,7 @@
         #game-log {
             margin-top: 20px;
             padding: 10px;
-            background: #f7f7f7;
+            background: rgba(255, 255, 255, 0.95);
             border: 1px solid #b22234;
             border-radius: 5px;
             color: #001f3f;
@@ -117,7 +146,7 @@
             text-align: left;
         }
         #upcoming-tasks {
-            background: #f7f7f7;
+            background: rgba(255, 255, 255, 0.95);
             border: 2px dashed #b22234;
             padding: 10px;
             margin: 15px 0;
@@ -141,6 +170,7 @@
             font-weight: bold;
             margin: 15px 0;
             color: #b22234;
+            text-shadow: 1px 1px 0px rgba(255,255,255,0.5);
         }
         #decision-timer {
             font-size: 1.2em;
