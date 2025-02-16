@@ -205,7 +205,9 @@
     <div id="upcomingTasks"></div>
     
     <!-- Instructions -->
-    <p id="instructions">Objective: Complete 5 delivery tasks AND 5 healthy tasks (e.g., Drink Water, Take Lunch Break, Play with Dog) each level.</p>
+    <p id="instructions">
+      Objective: Complete 5 delivery tasks AND 5 healthy tasks (e.g., Drink Water, Take Lunch Break, Play with Dog) each level.
+    </p>
     
     <!-- Action Buttons Panel -->
     <div id="actions">
@@ -243,9 +245,9 @@
         cash = 50,
         experience = 0,
         level = 1,
-        timer = 120, // Overall game timer (seconds)
+        timer = 120, // Overall game timer in seconds
         clickCount = 0;
-    let decisionTime = 5; // Popup decision timer (seconds)
+    let decisionTime = 5; // Popup decision timer in seconds
     let decisionInterval = null;
     
     // Level progress variables:
@@ -254,10 +256,10 @@
     let deliveryCount = 0;
     let healthyCount = 0;
     
-    // To track the active custom scenario
+    // Track current custom scenario key (if any)
     let currentScenarioKey = "";
     
-    // Timer for the current delivery task (upcoming tasks)
+    // Timer for the current delivery task (for upcoming tasks)
     let taskTimer = 30; // seconds
     
     // UTILITY FUNCTION
@@ -406,7 +408,7 @@
       {
         type: "delivery",
         text: "Next: Deliver to [ADDRESS]. Choose the correct address:",
-        options: [] // We'll generate delivery options dynamically.
+        options: [] // Options for delivery will be generated dynamically.
       },
       {
         type: "activity",
@@ -415,12 +417,12 @@
       },
       {
         type: "goBad",
-        text: "You're feeling rebellious! What do you do?",
+        text: "You're feeling chaotic! Which tempting option do you choose?",
         options: [
-          { text: "Gamble", effect: { health: -5, cash: +30, exp: +2 }, outcome: "You gamble and enjoy the thrill!", delivery: false },
-          { text: "Drink alcohol", effect: { health: -10, cash: +20, exp: +1 }, outcome: "You drink on the job—chaos ensues!", delivery: false },
-          { text: "Do cocaine", effect: { health: -15, cash: +20, exp: +1 }, outcome: "You did cocaine; it's a wild ride!", delivery: false },
-          { text: "Stay on track", effect: { health: +5, cash: 0, exp: +2 }, outcome: "You decide to keep your focus.", delivery: false }
+          { text: "Gamble for a jackpot!", effect: { health: -5, cash: -30, exp: +2 }, outcome: "You gambled and lost more than you won!", delivery: false },
+          { text: "Take a wild swig!", effect: { health: -10, cash: -20, exp: +1 }, outcome: "That wild swig took a toll on you!", delivery: false },
+          { text: "Do cocaine for a high!", effect: { health: -15, cash: -20, exp: +1 }, outcome: "The high wasn’t worth the cost!", delivery: false },
+          { text: "Wear a Super Fun Hat!", effect: { health: -10, cash: -10, exp: +3 }, outcome: "You rocked a super fun hat—but it cost you dearly!", delivery: false }
         ]
       }
     ];
@@ -431,7 +433,7 @@
       let text = scenario.text.replace("[ADDRESS]", currentAddress);
       document.getElementById("popupText").textContent = text;
       
-      // Create exactly three options: one correct, two wrong.
+      // Build exactly three options: one correct and two wrong.
       let correctOption = { 
         text: currentAddress, 
         effect: { health: 10, cash: 20, exp: 5 }, 
@@ -792,7 +794,7 @@
         type: "delivery",
         text: "Next: Deliver to [ADDRESS]. Choose the correct address:",
         taskType: "delivery",
-        options: [] // Options will be generated dynamically by showDeliveryPopup.
+        options: [] // Options are generated dynamically by showDeliveryPopup.
       },
       "Drink Water": {
         text: "Time to hydrate! Choose your drink:",
