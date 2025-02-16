@@ -75,6 +75,21 @@
             font-weight: bold;
             color: #3c3b6e;
             text-shadow: 1px 1px 0px rgba(255,255,255,0.5);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .gamble-btn {
+            padding: 5px 10px;
+            background: #FFD700;
+            color: #000;
+            border: 2px solid #b22234;
+            border-radius: 5px;
+            font-size: 0.9em;
+            font-weight: bold;
+            cursor: pointer;
+            animation: pulse 1.5s infinite;
+            white-space: nowrap;
         }
         #actions {
             display: grid;
@@ -582,8 +597,8 @@
                 }
             },
             2: {
-                deliveries: 4,
-                tasks: 4,
+                deliveries: 3,
+                tasks: 3,
                 timeBonus: 150,
                 actions: {
                     deliver: { reward: 15, health: -8, type: "delivery" },
@@ -598,8 +613,8 @@
                 }
             },
             3: {
-                deliveries: 5,
-                tasks: 5,
+                deliveries: 3,
+                tasks: 3,
                 timeBonus: 180,
                 actions: {
                     deliver: { reward: 20, health: -12, type: "delivery" },
@@ -919,7 +934,28 @@ Choose...`,
             
             if (choice.effect.type === "delivery") {
                 gameState.deliveries++;
-                addToLog("Delivery completed successfully!");
+                addToLog(`Delivery completed! (${gameState.deliveries}/${LEVELS[gameState.level].deliveries} deliveries)`);
+                
+                // Immediately check if level requirements are met
+                const levelConfig = LEVELS[gameState.level];
+                console.log(`Checking progress - Deliveries: ${gameState.deliveries}/${levelConfig.deliveries}, Tasks: ${gameState.tasks}/${levelConfig.tasks}`);
+                
+                if (gameState.deliveries >= levelConfig.deliveries && gameState.tasks >= levelConfig.tasks) {
+                    if (gameState.level < 3) {
+                        // Clear timers and progress to next level
+                        if (gameState.gameInterval) clearInterval(gameState.gameInterval);
+                        if (gameState.taskInterval) clearInterval(gameState.taskInterval);
+                        if (gameState.decisionTimer) clearInterval(gameState.decisionTimer);
+                        
+                        addToLog("🎉 Level requirements met! Moving to next level!");
+                        levelUp();
+                        return; // Exit early since we're changing levels
+                    } else if (gameState.level === 3) {
+                        addToLog("🎉 Congratulations! You've completed all levels!");
+                        endGame("🎉 Game Complete! You've mastered all three levels!");
+                        return;
+                    }
+                }
             }
             if (choice.effect.type === "bad") {
                 gameState.badChoices++;
@@ -938,7 +974,6 @@ Choose...`,
             }
             
             updateUpcomingDeliveries();
-            checkProgress();
             updateUI();
             saveGameState();
         }
@@ -946,38 +981,67 @@ Choose...`,
         function checkProgress() {
             const levelConfig = LEVELS[gameState.level];
             
-            if (gameState.deliveries >= levelConfig.deliveries && 
-                gameState.tasks >= levelConfig.tasks) {
-                
+            // Log current progress
+            console.log(`Level ${gameState.level} Progress - Deliveries: ${gameState.deliveries}/${levelConfig.deliveries}, Tasks: ${gameState.tasks}/${levelConfig.tasks}`);
+            addToLog(`Progress Check - Deliveries: ${gameState.deliveries}/${levelConfig.deliveries}, Tasks: ${gameState.tasks}/${levelConfig.tasks}`);
+            
+            // Check if level requirements are met
+            if (gameState.deliveries >= levelConfig.deliveries && gameState.tasks >= levelConfig.tasks) {
                 if (gameState.level < 3) {
+                    // Clear any existing timers before level up
+                    if (gameState.gameInterval) clearInterval(gameState.gameInterval);
+                    if (gameState.taskInterval) clearInterval(gameState.taskInterval);
+                    if (gameState.decisionTimer) clearInterval(gameState.decisionTimer);
+                    
+                    addToLog("🎉 Level Complete! Moving to next level...");
                     levelUp();
-                } else {
-                    endGame("🎉 Game Complete!");
+                } else if (gameState.level === 3) {
+                    // Game completion for level 3
+                    addToLog("🎉 Congratulations! You've completed all levels!");
+                    endGame("🎉 Game Complete! You've mastered all three levels!");
                 }
             }
         }
 
         function levelUp() {
+            // Clear all timers first
+            if (gameState.gameInterval) clearInterval(gameState.gameInterval);
+            if (gameState.taskInterval) clearInterval(gameState.taskInterval);
+            if (gameState.decisionTimer) clearInterval(gameState.decisionTimer);
+            
+            // Increment level
             gameState.level++;
+            
+            // Reset all counters and state for new level
             gameState.deliveries = 0;
             gameState.tasks = 0;
+            gameState.completedTaskTypes = new Set();
             gameState.timer += LEVELS[gameState.level].timeBonus;
-            gameState.completedTaskTypes.clear();
             
+            // Force UI update for level change
+            updateUI();
+            
+            // Initialize new level deliveries
             initializeDeliveries();
             
+            // Show level up message
             showTimedChoice(
-                `🎉 LEVEL ${gameState.level}\n\n${gameState.currentLevelDeliveries.join(" → ")}`,
-                [{ text: "Continue", effect: { type: "start" }, outcome: "Starting..." }],
+                `🎉 LEVEL ${gameState.level} UNLOCKED!\n\nNew Deliveries:\n${gameState.currentLevelDeliveries.join(" → ")}\n\nTime Bonus: +${LEVELS[gameState.level].timeBonus}s`,
+                [{ text: `Start Level ${gameState.level}!`, effect: { type: "start" }, outcome: "Starting new level..." }],
                 10,
                 () => {
                     hideModal();
                     startTimers();
                     updateButtons();
                     updateDeliveryListVisibility();
-                    addToLog(`Level ${gameState.level}`);
+                    addToLog(`📈 Advanced to Level ${gameState.level}! The temptations grow stronger...`);
+                    
+                    // Force another UI update after everything is set up
                     updateUI();
                     saveGameState();
+                    
+                    // Log the current state to verify
+                    console.log(`Level Up - Current State: Level ${gameState.level}, Deliveries: ${gameState.deliveries}, Tasks: ${gameState.tasks}`);
                 }
             );
         }
@@ -1039,17 +1103,26 @@ Choose...`,
                 requiredTasks: document.getElementById("required-tasks")
             };
 
-            // Only update if elements exist
+            // Force update all UI elements with current game state
             if (elements.health) elements.health.textContent = Math.floor(gameState.health);
-            if (elements.cash) elements.cash.textContent = gameState.cash;
+            if (elements.cash) {
+                const cashDiv = elements.cash.parentElement;
+                cashDiv.innerHTML = `Cash: $<span id="cash">${gameState.cash}</span>
+                    <button class="gamble-btn" onclick="handleGambleAll()">💰 GAMBLE ALL</button>`;
+            }
             if (elements.level) elements.level.textContent = gameState.level;
             if (elements.timer) elements.timer.textContent = gameState.timer;
             if (elements.deliveries) elements.deliveries.textContent = gameState.deliveries;
             if (elements.tasks) elements.tasks.textContent = gameState.tasks;
             if (elements.currentAddress) elements.currentAddress.textContent = gameState.currentAddress || "No current delivery";
             if (elements.taskTimer) elements.taskTimer.textContent = gameState.taskTimer;
+            
+            // Update required counts based on current level
             if (elements.requiredDeliveries) elements.requiredDeliveries.textContent = LEVELS[gameState.level].deliveries;
             if (elements.requiredTasks) elements.requiredTasks.textContent = LEVELS[gameState.level].tasks;
+            
+            // Log the update to verify
+            console.log(`UI Updated - Level: ${gameState.level}, Deliveries: ${gameState.deliveries}/${LEVELS[gameState.level].deliveries}, Tasks: ${gameState.tasks}/${LEVELS[gameState.level].tasks}`);
         }
 
         function updateUpcomingDeliveries() {
@@ -1072,31 +1145,6 @@ Choose...`,
                 shuffleArray(event.options),
                 gameState.decisionTime,
                 handleTemptationChoice
-            );
-        }
-
-        function checkTaskList() {
-            const penalty = 10 + (gameState.level * 5);
-            const healthLoss = 5 + (gameState.level * 2);
-            
-            gameState.cash -= penalty;
-            gameState.health -= healthLoss;
-            
-            // Show delivery list in a modal instead of in-place
-            showModal(
-                `📝 DELIVERY LIST (MEMORIZE QUICKLY!):\n\n${gameState.currentLevelDeliveries.join(" → ")}\n\nPenalty paid: -$${penalty}, -${healthLoss} Health`,
-                [{ text: "I've Memorized It", action: () => {
-                    hideModal();
-                    addToLog(`Checked address book: -$${penalty}, -${healthLoss} Health. The honest path feels harder...`);
-                    updateUI();
-                    
-                    // Increase temptation after checking
-                    if (Math.random() < 0.4) {
-                        setTimeout(() => {
-                            showTemptation();
-                        }, 500);
-                    }
-                }}]
             );
         }
 
@@ -1218,8 +1266,8 @@ Choose...`,
             // Get all buttons for the current level
             const buttons = shuffleArray([...LEVEL_BUTTONS[gameState.level]]);
             
-            // Ensure at least 9 buttons are shown (3x3 grid)
-            while (buttons.length < 9) {
+            // Ensure at least 8 buttons are shown
+            while (buttons.length < 8) {
                 buttons.push(buttons[Math.floor(Math.random() * buttons.length)]);
             }
             
@@ -1231,17 +1279,47 @@ Choose...`,
                 } else {
                     btn.onclick = () => performAction(button.action);
                 }
-                // Add American flag-themed hover effect
-                btn.onmouseover = () => {
-                    btn.style.background = '#3c3b6e';
-                    btn.style.borderColor = '#b22234';
-                };
-                btn.onmouseout = () => {
-                    btn.style.background = '#b22234';
-                    btn.style.borderColor = '#b22234';
-                };
                 actionsDiv.appendChild(btn);
             });
+        }
+
+        function handleGambleAll() {
+            if (gameState.cash <= 0) {
+                addToLog("No money to gamble!");
+                return;
+            }
+
+            const currentCash = gameState.cash;
+            showTimedChoice(
+                `🎲 GAMBLE $${currentCash}?\n\n50/50 chance:\nWIN: Double your money to $${currentCash * 2}\nLOSE: Lose everything\n\nAre you sure?`,
+                [
+                    { text: "🎲 YES, GAMBLE IT ALL!", 
+                      effect: { type: "gamble" },
+                      outcome: "Rolling the dice..." },
+                    { text: "❌ NO, KEEP MY MONEY", 
+                      effect: { type: "cancel" },
+                      outcome: "Gambling cancelled" }
+                ],
+                12,
+                (choice) => {
+                    if (choice.effect.type === "gamble") {
+                        const win = Math.random() >= 0.5;
+                        if (win) {
+                            gameState.cash *= 2;
+                            addToLog(`🎰 JACKPOT! Doubled your money to $${gameState.cash}!`);
+                            vibrateDevice(300);
+                        } else {
+                            gameState.cash = 0;
+                            addToLog("💸 BUST! Lost all your money!");
+                            vibrateDevice(500);
+                        }
+                        updateUI();
+                    } else {
+                        addToLog("Gambling cancelled - kept your money safe.");
+                    }
+                    hideModal();
+                }
+            );
         }
 
         // Add touch event handling
@@ -1305,11 +1383,6 @@ Choose...`,
         
         // Add auto-save on important events
         function completeDelivery() {
-            // ... existing code ...
-            saveGameState();
-        }
-        
-        function levelUp() {
             // ... existing code ...
             saveGameState();
         }
@@ -1633,6 +1706,27 @@ Choose...`,
                 if (!gameState.completedTaskTypes.has(actionType)) {
                     gameState.tasks++;
                     gameState.completedTaskTypes.add(actionType);
+                    addToLog(`Task completed! (${gameState.tasks}/${levelConfig.tasks} tasks)`);
+                    
+                    // Immediately check if level requirements are met
+                    console.log(`Checking progress - Deliveries: ${gameState.deliveries}/${levelConfig.deliveries}, Tasks: ${gameState.tasks}/${levelConfig.tasks}`);
+                    
+                    if (gameState.deliveries >= levelConfig.deliveries && gameState.tasks >= levelConfig.tasks) {
+                        if (gameState.level < 3) {
+                            // Clear timers and progress to next level
+                            if (gameState.gameInterval) clearInterval(gameState.gameInterval);
+                            if (gameState.taskInterval) clearInterval(gameState.taskInterval);
+                            if (gameState.decisionTimer) clearInterval(gameState.decisionTimer);
+                            
+                            addToLog("🎉 Level requirements met! Moving to next level!");
+                            levelUp();
+                            return; // Exit early since we're changing levels
+                        } else if (gameState.level === 3) {
+                            addToLog("🎉 Congratulations! You've completed all levels!");
+                            endGame("🎉 Game Complete! You've mastered all three levels!");
+                            return;
+                        }
+                    }
                 }
             }
 
@@ -1643,7 +1737,6 @@ Choose...`,
                 setTimeout(addRandomEvent, 500);
             }
             
-            checkProgress();
             updateUI();
         }
     </script>
