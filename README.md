@@ -1,7 +1,11 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="theme-color" content="#b22234" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <title>BAD MAILMAN - Neon Decisions 🇺🇸</title>
     <style>
         /* American Flag Red, White & Blue Theme */
@@ -201,6 +205,122 @@
             background: rgba(255,255,255,0.9);
             box-shadow: 0 0 15px rgba(60,59,110,0.3);
         }
+
+        /* Mobile Optimizations */
+        @media (max-width: 768px) {
+            body {
+                font-size: 16px;
+                -webkit-tap-highlight-color: transparent;
+                overscroll-behavior: none;
+            }
+            
+            #game-container {
+                max-width: 100%;
+                margin: 10px;
+                padding: 10px;
+                touch-action: manipulation;
+            }
+            
+            #actions {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 8px;
+            }
+            
+            button {
+                padding: 15px;
+                font-size: 1.1em;
+                min-height: 60px;
+                touch-action: manipulation;
+            }
+            
+            .modal-option {
+                margin: 8px;
+                padding: 15px;
+                min-height: 50px;
+                width: 90%;
+                max-width: 300px;
+            }
+            
+            #modal-content {
+                width: 90%;
+                max-width: 350px;
+                margin: 20px;
+                padding: 15px;
+                font-size: 1.1em;
+            }
+            
+            .stat-item {
+                font-size: 1em;
+            }
+            
+            #game-log {
+                height: 120px;
+                font-size: 0.9em;
+            }
+            
+            .welcome-title {
+                font-size: 2em;
+            }
+            
+            /* Prevent text selection */
+            * {
+                -webkit-touch-callout: none;
+                -webkit-user-select: none;
+                user-select: none;
+            }
+            
+            /* Better touch feedback */
+            button:active {
+                transform: scale(0.95);
+                transition: transform 0.1s;
+            }
+            
+            /* Landscape mode optimizations */
+            @media (orientation: landscape) {
+                #game-container {
+                    display: grid;
+                    grid-template-columns: 1fr 1fr;
+                    gap: 10px;
+                }
+                
+                #actions {
+                    grid-template-columns: repeat(3, 1fr);
+                }
+                
+                #game-log {
+                    height: 200px;
+                }
+            }
+        }
+        
+        /* Improved button visibility */
+        button {
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        
+        /* Enhanced visual feedback */
+        .tempting-choice {
+            animation: temptPulse 1.5s infinite;
+        }
+        
+        @keyframes temptPulse {
+            0% { transform: scale(1); box-shadow: 0 0 15px rgba(255, 215, 0, 0.5); }
+            50% { transform: scale(1.02); box-shadow: 0 0 25px rgba(255, 215, 0, 0.8); }
+            100% { transform: scale(1); box-shadow: 0 0 15px rgba(255, 215, 0, 0.5); }
+        }
+        
+        /* Better visibility for game stats */
+        #stats {
+            background: linear-gradient(45deg, #f7f7f7, #e7e7e7);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        /* Improved modal readability */
+        #modal-content {
+            box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+            background: linear-gradient(45deg, #fff, #f7f7f7);
+        }
     </style>
 </head>
 <body>
@@ -398,7 +518,8 @@
             lastDogInteraction: 0,
             dogInteractions: 0,
             usedAddresses: new Set(),
-            currentLevelDeliveries: []
+            currentLevelDeliveries: [],
+            completedTaskTypes: new Set()
         };
 
         // Level configurations with varying challenges
@@ -543,7 +664,8 @@
                 lastDogInteraction: 0,
                 dogInteractions: 0,
                 usedAddresses: new Set(),
-                currentLevelDeliveries: []
+                currentLevelDeliveries: [],
+                completedTaskTypes: new Set()
             };
         }
 
@@ -611,12 +733,32 @@
                 const currentTime = Date.now();
                 const timeSinceLastDog = currentTime - gameState.lastDogInteraction;
                 
-                // Prevent rapid clicking (must wait at least 10 seconds between interactions)
                 if (timeSinceLastDog < 10000 && gameState.lastDogInteraction !== 0) {
                     addToLog("The dog needs a break! Try something else for now.");
                     return;
                 }
 
+                // If this task type has already been completed, offer a temptation instead
+                if (gameState.completedTaskTypes.has('dog')) {
+                    showTimedChoice(
+                        "You've already bonded with this dog today...",
+                        [
+                            { text: "Train for crime (+Cash)", 
+                              effect: { health: -20, cash: 50, type: "bad" },
+                              outcome: "The dog becomes your partner in crime...",
+                              tempting: true },
+                            { text: "Just play (+Health)", 
+                              effect: { health: 5, cash: 0, type: "none" },
+                              outcome: "A simple moment of joy, but no task completed." }
+                        ],
+                        gameState.decisionTime,
+                        handleDogChoice
+                    );
+                    return;
+                }
+
+                // First time completing this task type
+                gameState.completedTaskTypes.add('dog');
                 gameState.lastDogInteraction = currentTime;
                 gameState.dogInteractions++;
 
@@ -857,30 +999,26 @@
                 });
             });
 
-            // Add criminal options for ALL levels (including Level 1)
+            // Add criminal options based on level
             const criminalOptions = [
-                { text: `"Lose" the package (+$${baseReward})`,
+                { text: `💰 "Lose" the package (+$${baseReward})`,
                   effect: { health: -15, cash: baseReward, type: "bad" },
                   outcome: "Easy money... The first step into darkness.",
-                  tempting: true },
-                { text: `Sell package contents (+$${baseReward + bonusReward})`,
-                  effect: { health: -20, cash: baseReward + bonusReward, type: "bad" },
-                  outcome: "The money feels good... Maybe being bad isn't so wrong?",
                   tempting: true }
-            ];
+                ];
 
             // Add more serious criminal options for higher levels
             if (gameState.level >= 2) {
                 criminalOptions.push(
-                    { text: `Sell to identity thieves (+$${baseReward * 2})`,
-                      effect: { health: -30, cash: baseReward * 2, type: "bad" },
-                      outcome: "You're part of something bigger now...",
+                    { text: `💎 Sell package contents (+$${baseReward + bonusReward})`,
+                      effect: { health: -20, cash: baseReward + bonusReward, type: "bad" },
+                      outcome: "The money feels good... Maybe being bad isn't so wrong?",
                       tempting: true }
                 );
             }
             if (gameState.level === 3) {
                 criminalOptions.push(
-                    { text: `Start a mail theft empire (+$${baseReward * 3})`,
+                    { text: `👑 Start a mail theft empire (+$${baseReward * 3})`,
                       effect: { health: -40, cash: baseReward * 3, type: "bad" },
                       outcome: "Power. Control. Money. Everything you deserve...",
                       tempting: true }
@@ -890,9 +1028,13 @@
             // Add criminal options to the choices
             options.push(...criminalOptions);
 
-            // Show choices with shuffled options
+            // Show choices with simplified text
             showTimedChoice(
-                `Choose your path...\n\nCorrect Delivery: +Health, +$15\nWrong Delivery: -Health, -$10\n\nOr give in to darker temptations...\nThe criminal path is always more profitable...`,
+                `📬 MAKE YOUR DELIVERY\n
+✅ Correct: +Health, +$15
+❌ Wrong: -Health, -$10
+💰 Criminal: More Cash, Less Soul\n
+Choose...`,
                 shuffleArray(options),
                 gameState.decisionTime,
                 handleDeliveryChoice
@@ -999,6 +1141,7 @@
         }
 
         function handleDeliveryChoice(choice) {
+            vibrateDevice(100); // Vibrate on delivery choice
             clearInterval(gameState.decisionTimer);
             gameState.health += choice.effect.health;
             gameState.cash += choice.effect.cash;
@@ -1040,6 +1183,7 @@
         }
 
         function completeDelivery() {
+            vibrateDevice(200); // Longer vibration for level up
             gameState.deliveries++;
             gameState.taskTimer = 30;
             gameState.currentLevelDeliveries.shift();
@@ -1054,6 +1198,7 @@
             
             updateUpcomingDeliveries();
             checkProgress(); // Check progress after completing delivery
+            saveGameState();
         }
 
         function failDelivery() {
@@ -1091,6 +1236,7 @@
         }
 
         function levelUp() {
+            vibrateDevice(200); // Longer vibration for level up
             gameState.level++;
             gameState.deliveries = 0;
             gameState.tasks = 0;
@@ -1112,35 +1258,46 @@
                     updateDeliveryListVisibility();
                     addToLog(`🌟 Advanced to Level ${gameState.level}! The temptations grow stronger...`);
                     updateUI();
+                    saveGameState();
+                    gameState.completedTaskTypes.clear();  // Reset completed tasks for new level
                 }
             );
         }
 
         function endGame(message) {
-            // Clear all timers
             clearInterval(gameState.gameInterval);
             clearInterval(gameState.taskInterval);
             clearInterval(gameState.decisionTimer);
             
-            const finalScore = gameState.cash + (gameState.health * 2);
-            const badnessRating = (gameState.badChoices / (gameState.badChoices + gameState.goodChoices)) * 100 || 0;
+            const finalScore = Math.floor(gameState.cash + (gameState.health * 2));
+            const badnessRating = Math.floor((gameState.badChoices / (gameState.badChoices + gameState.goodChoices)) * 100) || 0;
             
             let endingMessage = "";
             if (badnessRating > 75) {
-                endingMessage = "You've become a true villain. The mail system was just the beginning of your criminal empire. The darkness didn't just consume you - you became the darkness.";
+                endingMessage = "You've become a true villain. The mail system was just your first step into darkness.";
             } else if (badnessRating > 50) {
-                endingMessage = "You walked the line between good and evil, taking what you wanted. Neither hero nor villain, you're a survivor in a corrupt world.";
+                endingMessage = "You walked the line between good and evil, taking what you needed to survive.";
             } else {
-                endingMessage = "Against all odds, you maintained your integrity. The temptations were strong, but your will was stronger. There's hope for this city yet.";
+                endingMessage = "Against all odds, you maintained your integrity. Your will was stronger than temptation.";
             }
             
             showModal(
-                `${message}\n\nFinal Score: ${finalScore}\nHealth: ${gameState.health}\nCash: $${gameState.cash}\n\nLevel Reached: ${gameState.level}/3\nDeliveries Made: ${gameState.deliveries}\nTasks Completed: ${gameState.tasks}\nBad Choices: ${gameState.badChoices}\nGood Choices: ${gameState.goodChoices}\n\n${endingMessage}`,
-                [{ text: "Back to Main Menu", action: () => {
+                `${message}\n\n` +
+                `📊 FINAL RESULTS\n` +
+                `Level: ${gameState.level}/3\n` +
+                `Score: ${finalScore}\n` +
+                `Health: ${Math.floor(gameState.health)}\n` +
+                `Cash: $${gameState.cash}\n\n` +
+                `📬 STATISTICS\n` +
+                `Deliveries: ${gameState.deliveries}\n` +
+                `Tasks: ${gameState.tasks}\n` +
+                `Good/Bad: ${gameState.goodChoices}/${gameState.badChoices}\n\n` +
+                `${endingMessage}`,
+                [{ text: "Return to Main Menu", action: () => {
                     hideModal();
                     document.getElementById("game-content").style.display = "none";
                     document.getElementById("main-menu").style.display = "block";
-                    showStartMenu(); // Show the full start menu with both options
+                    showStartMenu();
                 }}]
             );
         }
@@ -1169,7 +1326,7 @@
         }
 
         function updateUI() {
-            document.getElementById("health").textContent = gameState.health;
+            document.getElementById("health").textContent = Math.floor(gameState.health);
             document.getElementById("cash").textContent = gameState.cash;
             document.getElementById("level").textContent = gameState.level;
             document.getElementById("timer").textContent = gameState.timer;
@@ -1373,8 +1530,93 @@
             });
         }
 
-        // Initialize game
-        window.onload = showStartMenu;
+        // Add touch event handling
+        document.addEventListener('touchstart', function(e) {
+            if (e.touches.length > 1) {
+                e.preventDefault(); // Prevent pinch zoom
+            }
+        }, { passive: false });
+        
+        // Prevent double-tap zoom
+        document.addEventListener('dblclick', function(e) {
+            e.preventDefault();
+        });
+        
+        // Handle orientation changes
+        window.addEventListener('orientationchange', function() {
+            setTimeout(updateUI, 100); // Update UI after orientation change
+        });
+        
+        // Add vibration feedback for important events
+        function vibrateDevice(duration) {
+            if ('vibrate' in navigator) {
+                navigator.vibrate(duration);
+            }
+        }
+        
+        // Add audio feedback (optional, based on user preference)
+        const gameAudio = {
+            delivery: new Audio('data:audio/wav;base64,UklGRl9vT19...'), // Base64 encoded short sound
+            levelUp: new Audio('data:audio/wav;base64,UklGRl9vT19...'),
+            temptation: new Audio('data:audio/wav;base64,UklGRl9vT19...')
+        };
+        
+        // Handle audio muting
+        let audioEnabled = false;
+        function toggleAudio() {
+            audioEnabled = !audioEnabled;
+            // Update audio button UI
+        }
+        
+        // Add save game progress
+        function saveGameState() {
+            try {
+                localStorage.setItem('badMailmanState', JSON.stringify(gameState));
+            } catch (e) {
+                console.error('Failed to save game state:', e);
+            }
+        }
+        
+        function loadGameState() {
+            try {
+                const saved = localStorage.getItem('badMailmanState');
+                if (saved) {
+                    gameState = JSON.parse(saved);
+                    updateUI();
+                }
+            } catch (e) {
+                console.error('Failed to load game state:', e);
+            }
+        }
+        
+        // Add auto-save on important events
+        function completeDelivery() {
+            // ... existing code ...
+            saveGameState();
+        }
+        
+        function levelUp() {
+            // ... existing code ...
+            saveGameState();
+        }
+        
+        // Add pull-to-refresh prevention
+        document.body.style.overscrollBehavior = 'none';
+        
+        // Initialize mobile-specific features
+        window.onload = function() {
+            // Prevent scrolling
+            document.body.style.overflow = 'hidden';
+            document.body.style.position = 'fixed';
+            document.body.style.width = '100%';
+            document.body.style.height = '100%';
+            
+            // Load saved game if exists
+            loadGameState();
+            
+            // Start game
+            showStartMenu();
+        };
     </script>
 </body>
 </html> 
