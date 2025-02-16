@@ -377,7 +377,7 @@
                 <div class="stat-item">Health: <span id="health">100</span></div>
                 <div class="stat-item">Cash: $<span id="cash">50</span></div>
                 <div class="stat-item">Level: <span id="level">1</span>/3</div>
-                <div class="stat-item">Time: <span id="timer">180</span>s</div>
+                <div class="stat-item">Time: <span id="timer">300</span>s</div>
             </div>
 
             <div id="objective">
@@ -390,7 +390,7 @@
             <div id="upcoming-tasks">
                 <h3>Delivery Information</h3>
                 <p>Current Delivery: <span id="current-address"></span></p>
-                <p>Time for delivery: <span id="task-timer">30</span>s</p>
+                <p>Time for delivery: <span id="task-timer">45</span>s</p>
                 <p class="hidden-list" id="upcoming-list"></p>
                 <p style="font-style: italic; color: #666;">Click to check delivery list</p>
             </div>
@@ -415,7 +415,7 @@
         <div id="modal-content">
             <p id="modal-text"></p>
             <div id="modal-options"></div>
-            <div id="decision-timer">Time: <span id="decision-time">5</span>s</div>
+            <div id="decision-timer">Time: <span id="decision-time">12</span>s</div>
         </div>
     </div>
 
@@ -540,11 +540,11 @@
             health: 100,
             cash: 50,
             level: 1,
-            timer: 180,
+            timer: 300,
             deliveries: 0,
             tasks: 0,
             gameInterval: null,
-            taskTimer: 30,
+            taskTimer: 45,
             taskInterval: null,
             decisionTimer: null,
             currentAddress: "",
@@ -552,13 +552,15 @@
             storyIndex: 0,
             badChoices: 0,
             goodChoices: 0,
-            decisionTime: 8,
+            decisionTime: 12,
             showOriginStory: false,
             lastDogInteraction: 0,
             dogInteractions: 0,
             usedAddresses: new Set(),
             currentLevelDeliveries: [],
-            completedTaskTypes: new Set()
+            completedTaskTypes: new Set(),
+            deliveryOptions: new Set(),
+            character: ""  // New: Store selected character
         };
 
         // Level configurations with varying challenges
@@ -566,7 +568,7 @@
             1: {
                 deliveries: 3,
                 tasks: 3,
-                timeBonus: 60,
+                timeBonus: 120,
                 actions: {
                     deliver: { reward: 10, health: -5, type: "delivery" },
                     water: { reward: 5, health: 10, type: "task" },
@@ -582,7 +584,7 @@
             2: {
                 deliveries: 4,
                 tasks: 4,
-                timeBonus: 90,
+                timeBonus: 150,
                 actions: {
                     deliver: { reward: 15, health: -8, type: "delivery" },
                     steal: { reward: 30, health: -20, type: "bad" },
@@ -598,7 +600,7 @@
             3: {
                 deliveries: 5,
                 tasks: 5,
-                timeBonus: 120,
+                timeBonus: 180,
                 actions: {
                     deliver: { reward: 20, health: -12, type: "delivery" },
                     scam: { reward: 50, health: -25, type: "bad" },
@@ -628,17 +630,16 @@
             showTimedChoice(
                 "Ready to begin your descent?",
                 [
-                    { text: "Quick Start ⚡", effect: { type: "start" }, outcome: "Starting game..." },
+                    { text: "Start Game ⚡", effect: { type: "character" }, outcome: "Choosing character..." },
                     { text: "Origin Story 📖", effect: { type: "origin" }, outcome: "Loading origin story..." }
                 ],
-                8,
+                12,
                 (choice) => {
                     if (choice.effect.type === "origin") {
                         gameState.showOriginStory = true;
                         startOriginStory();
-                    } else {
-                        gameState.showOriginStory = false;
-                        startGame();
+                    } else if (choice.effect.type === "character") {
+                        showCharacterSelection();
                     }
                 }
             );
@@ -686,11 +687,11 @@
                 health: 100,
                 cash: 50,
                 level: 1,
-                timer: 180,
+                timer: 300,
                 deliveries: 0,
                 tasks: 0,
                 gameInterval: null,
-                taskTimer: 30,
+                taskTimer: 45,
                 taskInterval: null,
                 decisionTimer: null,
                 currentAddress: "",
@@ -698,13 +699,15 @@
                 storyIndex: 0,
                 badChoices: 0,
                 goodChoices: 0,
-                decisionTime: 8,
+                decisionTime: 12,
                 showOriginStory: false,
                 lastDogInteraction: 0,
                 dogInteractions: 0,
                 usedAddresses: new Set(),
                 currentLevelDeliveries: [],
-                completedTaskTypes: new Set()
+                completedTaskTypes: new Set(),
+                deliveryOptions: new Set(),
+                character: gameState.character  // Preserve selected character
             };
         }
 
@@ -1010,12 +1013,21 @@
             const streetBase = streetParts.slice(0, -1).join(" ");
             const streetType = streetParts[streetParts.length - 1];
             
-            // Generate extremely similar addresses
-            const similarAddresses = [
-                `${number} ${streetBase} ${getRandomStreetType(streetType)}`,
-                `${parseInt(number) + 2} ${streetBase} ${streetType}`,
-                `${number} ${getSlightlyModifiedStreet(streetBase)} ${streetType}`
-            ];
+            // Clear previous delivery options
+            gameState.deliveryOptions.clear();
+            
+            // Generate new similar addresses that haven't been used recently
+            const similarAddresses = [];
+            while (similarAddresses.length < 3) {
+                const newAddress = generateUniqueAddress(number, streetBase, streetType);
+                if (!gameState.deliveryOptions.has(newAddress)) {
+                    similarAddresses.push(newAddress);
+                    gameState.deliveryOptions.add(newAddress);
+                }
+            }
+            
+            // Add the correct address to the set
+            gameState.deliveryOptions.add(correctAddress);
             
             // Base criminal rewards on level and player state
             const baseReward = 50 + (gameState.level * 30);
@@ -1038,15 +1050,14 @@
                 });
             });
 
-            // Add criminal options based on level
+            // Add criminal options with unique rewards
             const criminalOptions = [
                 { text: `💰 "Lose" the package (+$${baseReward})`,
                   effect: { health: -15, cash: baseReward, type: "bad" },
                   outcome: "Easy money... The first step into darkness.",
                   tempting: true }
-                ];
+            ];
 
-            // Add more serious criminal options for higher levels
             if (gameState.level >= 2) {
                 criminalOptions.push(
                     { text: `💎 Sell package contents (+$${baseReward + bonusReward})`,
@@ -1064,10 +1075,8 @@
                 );
             }
 
-            // Add criminal options to the choices
             options.push(...criminalOptions);
 
-            // Show choices with simplified text
             showTimedChoice(
                 `📬 MAKE YOUR DELIVERY\n
 ✅ Correct: +Health, +$15
@@ -1080,27 +1089,18 @@ Choose...`,
             );
         }
 
-        function getRandomStreetType(current) {
+        // New function to generate unique addresses
+        function generateUniqueAddress(number, streetBase, currentType) {
             const types = ['St', 'Ave', 'Dr', 'Ct', 'Ln', 'Circle', 'Blvd', 'Place', 'Road'];
-            let available = types.filter(t => t !== current);
-            return available[Math.floor(Math.random() * available.length)];
-        }
-
-        function getSlightlyModifiedStreet(street) {
-            // Slightly modify street name to be very similar
-            const modifications = {
-                'Irving': ['Irwing', 'Erving', 'Irvine'],
-                'Washington': ['Washingten', 'Washinton', 'Washenton'],
-                'Oak': ['Oake', 'Oke', 'Oaks'],
-                'Maple': ['Mapel', 'Maples', 'Mapple']
-            };
-            
-            for (let [original, variants] of Object.entries(modifications)) {
-                if (street.includes(original)) {
-                    return street.replace(original, variants[Math.floor(Math.random() * variants.length)]);
-                }
-            }
-            return street;
+            let address;
+            do {
+                const randomType = types[Math.floor(Math.random() * types.length)];
+                const numberMod = Math.random() < 0.5 ? 
+                    parseInt(number) + 2 : 
+                    parseInt(number) - 2;
+                address = `${numberMod} ${getSlightlyModifiedStreet(streetBase)} ${randomType}`;
+            } while (gameState.deliveryOptions.has(address));
+            return address;
         }
 
         function showTemptation() {
@@ -1224,7 +1224,7 @@ Choose...`,
         function completeDelivery() {
             vibrateDevice(200); // Longer vibration for level up
             gameState.deliveries++;
-            gameState.taskTimer = 30;
+            gameState.taskTimer = 45;
             gameState.currentLevelDeliveries.shift();
             
             // If we still have deliveries in the current level
@@ -1320,9 +1320,13 @@ Choose...`,
                 endingMessage = "Against all odds, you maintained your integrity. Your will was stronger than temptation.";
             }
             
+            const characterEmoji = gameState.character === "Andrew" ? "👨🏼" : 
+                                 gameState.character === "Dario" ? "👨🏾" : "👩🏼";
+            
             showModal(
                 `${message}\n\n` +
                 `📊 FINAL RESULTS\n` +
+                `Character: ${characterEmoji} ${gameState.character}\n` +
                 `Level: ${gameState.level}/3\n` +
                 `Score: ${finalScore}\n` +
                 `Health: ${Math.floor(gameState.health)}\n` +
@@ -1654,6 +1658,42 @@ Choose...`,
             // Start game
             showStartMenu();
         };
+
+        // New function to show character selection
+        function showCharacterSelection() {
+            const characters = [
+                { name: "Andrew", emoji: "👨🏼", description: "A determined mailman with a strong work ethic." },
+                { name: "Dario", emoji: "👨🏾", description: "A charismatic carrier with street smarts." },
+                { name: "Raeanne", emoji: "👩🏼", description: "A resourceful postal worker with quick wit." }
+            ];
+
+            const characterOptions = characters.map(char => ({
+                text: `${char.emoji} ${char.name}`,
+                effect: { type: "select", character: char.name },
+                outcome: `Selected ${char.name}`,
+                description: char.description
+            }));
+
+            showModal(
+                "👤 SELECT YOUR CHARACTER\n\n" +
+                characters.map(char => 
+                    `${char.emoji} ${char.name}\n${char.description}\n`
+                ).join("\n"),
+                characterOptions.map(opt => ({
+                    text: opt.text,
+                    action: () => {
+                        gameState.character = opt.effect.character;
+                        hideModal();
+                        if (gameState.showOriginStory) {
+                            startOriginStory();
+                        } else {
+                            startGame();
+                        }
+                        addToLog(`You are playing as ${opt.effect.character}!`);
+                    }
+                }))
+            );
+        }
     </script>
 </body>
 </html> 
