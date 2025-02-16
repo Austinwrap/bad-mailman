@@ -62,34 +62,38 @@
         #stats {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 10px;
+            gap: 8px;
             background: rgba(255, 255, 255, 0.95);
             border: 2px solid #b22234;
-            padding: 15px;
+            padding: 10px;
             margin-bottom: 15px;
             border-radius: 5px;
             color: #001f3f;
         }
         .stat-item {
-            font-size: 1.2em;
+            font-size: 1.1em;
             font-weight: bold;
             color: #3c3b6e;
             text-shadow: 1px 1px 0px rgba(255,255,255,0.5);
             display: flex;
             align-items: center;
-            gap: 10px;
+            justify-content: space-between;
+            gap: 5px;
+            padding: 5px;
         }
         .gamble-btn {
-            padding: 5px 10px;
-            background: #FFD700;
+            padding: 4px 8px;
+            background: linear-gradient(45deg, #FFD700, #FFA500);
             color: #000;
-            border: 2px solid #b22234;
-            border-radius: 5px;
-            font-size: 0.9em;
+            border: 1px solid #b22234;
+            border-radius: 4px;
+            font-size: 0.8em;
             font-weight: bold;
             cursor: pointer;
             animation: pulse 1.5s infinite;
             white-space: nowrap;
+            margin-left: 5px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
         }
         #actions {
             display: grid;
@@ -254,96 +258,111 @@
 
         /* Mobile Optimizations */
         @media (max-width: 768px) {
-            body {
-                font-size: 16px;
-                -webkit-tap-highlight-color: transparent;
-                overscroll-behavior: contain;
-                position: relative;
-                height: auto;
-                min-height: 100vh;
-                overflow-y: auto;
-            }
-            
             #game-container {
                 max-width: 100%;
-                margin: 10px;
-                padding: 10px;
-                touch-action: pan-y pinch-zoom;
-                overflow-y: auto;
-                -webkit-overflow-scrolling: touch;
+                margin: 0;
+                padding: 8px;
+                border-radius: 0;
+            }
+            
+            #stats {
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 4px;
+                padding: 6px;
+                margin-bottom: 10px;
+            }
+            
+            .stat-item {
+                font-size: 0.9em;
+                padding: 4px;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+            
+            .gamble-btn {
+                padding: 2px 6px;
+                font-size: 0.7em;
+                margin-left: 4px;
+            }
+            
+            h1 {
+                font-size: 1.3em;
+                margin: 8px 0;
+            }
+            
+            #objective {
+                margin: 8px 0;
+                padding: 8px;
+                background: rgba(255, 255, 255, 0.95);
+                border-radius: 4px;
+            }
+            
+            #objective h3 {
+                font-size: 1em;
+                margin: 4px 0;
+            }
+            
+            #objective p {
+                font-size: 0.85em;
+                margin: 4px 0;
+            }
+            
+            #upcoming-tasks {
+                margin: 8px 0;
+                padding: 8px;
+            }
+            
+            #upcoming-tasks h3 {
+                font-size: 1em;
+                margin: 4px 0;
+            }
+            
+            #upcoming-tasks p {
+                font-size: 0.85em;
+                margin: 4px 0;
             }
             
             #actions {
                 grid-template-columns: repeat(2, 1fr);
-                gap: 8px;
-                margin-bottom: 20px;
+                gap: 4px;
+                margin: 8px 0;
             }
             
-            button {
-                padding: 15px;
-                font-size: 1.1em;
-                min-height: 60px;
-                touch-action: manipulation;
-                margin-bottom: 5px;
-            }
-            
-            #modal {
-                position: fixed;
-                top: 50%;
-                left: 50%;
-                transform: translate(-50%, -50%);
-                max-height: 90vh;
-                overflow-y: auto;
-                -webkit-overflow-scrolling: touch;
-            }
-            
-            #modal-content {
-                width: 90%;
-                max-width: 350px;
-                margin: 20px auto;
-                padding: 15px;
-                font-size: 1.1em;
-                overflow-y: auto;
+            #actions button {
+                padding: 8px;
+                font-size: 0.85em;
+                min-height: 44px;
+                white-space: normal;
             }
             
             #game-log {
-                height: 120px;
-                font-size: 0.9em;
-                -webkit-overflow-scrolling: touch;
+                height: 100px;
+                font-size: 0.8em;
+                margin-top: 8px;
             }
             
-            .welcome-title {
-                font-size: 2em;
+            .log-entry {
+                padding: 4px;
+                margin: 2px 0;
+            }
+        }
+        
+        /* iPhone SE and smaller screens */
+        @media (max-width: 375px) {
+            .stat-item {
+                font-size: 0.85em;
             }
             
-            /* Prevent text selection */
-            * {
-                -webkit-touch-callout: none;
-                -webkit-user-select: none;
-                user-select: none;
+            .gamble-btn {
+                padding: 2px 4px;
+                font-size: 0.7em;
             }
             
-            /* Better touch feedback */
-            button:active {
-                transform: scale(0.95);
-                transition: transform 0.1s;
-            }
-            
-            /* Landscape mode optimizations */
-            @media (orientation: landscape) {
-                #game-container {
-                    display: grid;
-                    grid-template-columns: 1fr 1fr;
-                    gap: 10px;
-                }
-                
-                #actions {
-                    grid-template-columns: repeat(3, 1fr);
-                }
-                
-                #game-log {
-                    height: 200px;
-                }
+            #actions button {
+                padding: 8px;
+                font-size: 0.85em;
             }
         }
         
@@ -936,27 +955,12 @@ Choose...`,
                 gameState.deliveries++;
                 addToLog(`Delivery completed! (${gameState.deliveries}/${LEVELS[gameState.level].deliveries} deliveries)`);
                 
-                // Immediately check if level requirements are met
-                const levelConfig = LEVELS[gameState.level];
-                console.log(`Checking progress - Deliveries: ${gameState.deliveries}/${levelConfig.deliveries}, Tasks: ${gameState.tasks}/${levelConfig.tasks}`);
-                
-                if (gameState.deliveries >= levelConfig.deliveries && gameState.tasks >= levelConfig.tasks) {
-                    if (gameState.level < 3) {
-                        // Clear timers and progress to next level
-                        if (gameState.gameInterval) clearInterval(gameState.gameInterval);
-                        if (gameState.taskInterval) clearInterval(gameState.taskInterval);
-                        if (gameState.decisionTimer) clearInterval(gameState.decisionTimer);
-                        
-                        addToLog("🎉 Level requirements met! Moving to next level!");
-                        levelUp();
-                        return; // Exit early since we're changing levels
-                    } else if (gameState.level === 3) {
-                        addToLog("🎉 Congratulations! You've completed all levels!");
-                        endGame("🎉 Game Complete! You've mastered all three levels!");
-                        return;
-                    }
+                // Check progress immediately
+                if (checkProgress()) {
+                    return; // Exit if level up occurred
                 }
             }
+            
             if (choice.effect.type === "bad") {
                 gameState.badChoices++;
             }
@@ -965,10 +969,9 @@ Choose...`,
             hideModal();
             
             // Move to next delivery
-            gameState.taskTimer = 45; // Reset delivery timer
+            gameState.taskTimer = 45;
             gameState.currentLevelDeliveries.shift();
             
-            // Update current address if there are more deliveries
             if (gameState.currentLevelDeliveries.length > 0) {
                 gameState.currentAddress = gameState.currentLevelDeliveries[0];
             }
@@ -980,49 +983,56 @@ Choose...`,
 
         function checkProgress() {
             const levelConfig = LEVELS[gameState.level];
+            console.log(`Checking progress - Level ${gameState.level}`);
+            console.log(`Deliveries: ${gameState.deliveries}/${levelConfig.deliveries}`);
+            console.log(`Tasks: ${gameState.tasks}/${levelConfig.tasks}`);
             
-            // Log current progress
-            console.log(`Level ${gameState.level} Progress - Deliveries: ${gameState.deliveries}/${levelConfig.deliveries}, Tasks: ${gameState.tasks}/${levelConfig.tasks}`);
-            addToLog(`Progress Check - Deliveries: ${gameState.deliveries}/${levelConfig.deliveries}, Tasks: ${gameState.tasks}/${levelConfig.tasks}`);
-            
-            // Check if level requirements are met
-            if (gameState.deliveries >= levelConfig.deliveries && gameState.tasks >= levelConfig.tasks) {
+            if (gameState.deliveries >= levelConfig.deliveries && 
+                gameState.tasks >= levelConfig.tasks) {
+                
+                // Clear all timers
+                if (gameState.gameInterval) clearInterval(gameState.gameInterval);
+                if (gameState.taskInterval) clearInterval(gameState.taskInterval);
+                if (gameState.decisionTimer) clearInterval(gameState.decisionTimer);
+                
                 if (gameState.level < 3) {
-                    // Clear any existing timers before level up
-                    if (gameState.gameInterval) clearInterval(gameState.gameInterval);
-                    if (gameState.taskInterval) clearInterval(gameState.taskInterval);
-                    if (gameState.decisionTimer) clearInterval(gameState.decisionTimer);
-                    
-                    addToLog("🎉 Level Complete! Moving to next level...");
+                    console.log("Level requirements met! Advancing to next level...");
+                    addToLog("🎉 Level requirements met! Moving to next level!");
                     levelUp();
+                    return true;
                 } else if (gameState.level === 3) {
-                    // Game completion for level 3
+                    console.log("Game completed!");
                     addToLog("🎉 Congratulations! You've completed all levels!");
-                    endGame("🎉 Game Complete! You've mastered all three levels!");
+                    endGame("🎉 Game Complete!");
+                    return true;
                 }
             }
+            return false;
         }
 
         function levelUp() {
-            // Clear all timers first
+            // Clear all timers
             if (gameState.gameInterval) clearInterval(gameState.gameInterval);
             if (gameState.taskInterval) clearInterval(gameState.taskInterval);
             if (gameState.decisionTimer) clearInterval(gameState.decisionTimer);
             
             // Increment level
             gameState.level++;
+            console.log(`Leveling up to ${gameState.level}`);
             
-            // Reset all counters and state for new level
+            // Reset counters
             gameState.deliveries = 0;
             gameState.tasks = 0;
             gameState.completedTaskTypes = new Set();
+            
+            // Add time bonus
             gameState.timer += LEVELS[gameState.level].timeBonus;
             
-            // Force UI update for level change
-            updateUI();
-            
-            // Initialize new level deliveries
+            // Initialize new deliveries
             initializeDeliveries();
+            
+            // Force UI update
+            updateUI();
             
             // Show level up message
             showTimedChoice(
@@ -1034,14 +1044,9 @@ Choose...`,
                     startTimers();
                     updateButtons();
                     updateDeliveryListVisibility();
-                    addToLog(`📈 Advanced to Level ${gameState.level}! The temptations grow stronger...`);
-                    
-                    // Force another UI update after everything is set up
+                    addToLog(`📈 Advanced to Level ${gameState.level}!`);
                     updateUI();
                     saveGameState();
-                    
-                    // Log the current state to verify
-                    console.log(`Level Up - Current State: Level ${gameState.level}, Deliveries: ${gameState.deliveries}, Tasks: ${gameState.tasks}`);
                 }
             );
         }
