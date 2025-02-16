@@ -1,865 +1,1380 @@
-<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>BAD MAILMAN - Neon Decisions 🇺🇸</title>
-  <style>
-    /* American Flag Red, White & Blue Theme */
-    body {
-      margin: 0;
-      padding: 0;
-      background: #001f3f; /* Navy Blue */
-      color: #fff;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      text-align: center;
-    }
-    #game-container {
-      max-width: 600px;
-      margin: 20px auto;
-      padding: 15px;
-      background: #fff; /* White container */
-      border: 3px solid #b22234; /* Bold Red */
-      border-radius: 10px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.7);
-    }
-    h1 {
-      margin-bottom: 10px;
-      color: #3c3b6e; /* Dark Blue */
-    }
-    /* Stats Panel */
-    #stats {
-      background: #f7f7f7;
-      border: 2px solid #b22234;
-      padding: 10px;
-      margin-bottom: 10px;
-      text-align: left;
-      border-radius: 5px;
-      color: #001f3f;
-    }
-    #stats p {
-      font-size: 1.2em;
-      margin: 5px 0;
-    }
-    /* Progress Display */
-    #progress {
-      font-size: 1em;
-      font-weight: bold;
-    }
-    /* Objective Display */
-    #objectiveDisplay {
-      font-weight: bold;
-      margin-bottom: 10px;
-      color: #b22234;
-      font-size: 1.1em;
-    }
-    /* Instructions */
-    #instructions {
-      font-size: 1em;
-      margin-bottom: 10px;
-      color: #001f3f;
-    }
-    /* Upcoming Tasks Display */
-    #upcomingTasks {
-      background: #f7f7f7;
-      border: 2px dashed #b22234;
-      padding: 10px;
-      margin-bottom: 10px;
-      border-radius: 5px;
-      color: #001f3f;
-      font-size: 1em;
-    }
-    /* Action Buttons Container */
-    #actions {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 10px;
-      margin-bottom: 20px;
-    }
-    #actions button {
-      flex: 1 1 calc(45% - 10px);
-      padding: 10px;
-      font-size: 1em;
-      border: 2px solid #b22234;
-      border-radius: 10px;
-      background: #b22234;
-      color: #fff;
-      cursor: pointer;
-      transition: transform 0.2s, box-shadow 0.2s;
-    }
-    #actions button:hover {
-      box-shadow: 0 0 12px #3c3b6e;
-    }
-    #actions button:active {
-      transform: scale(0.95);
-    }
-    #actions button:disabled {
-      background: #888;
-      border-color: #666;
-      cursor: not-allowed;
-    }
-    /* Activity Log */
-    #log {
-      background: #f7f7f7;
-      border: 2px solid #b22234;
-      padding: 10px;
-      max-height: 200px;
-      overflow-y: auto;
-      text-align: left;
-      border-radius: 5px;
-      color: #001f3f;
-    }
-    #log h2 {
-      margin-top: 0;
-      font-size: 1.2em;
-      border-bottom: 2px solid #b22234;
-      padding-bottom: 5px;
-    }
-    #log ul {
-      list-style-type: none;
-      padding: 0;
-      margin: 0;
-      font-size: 0.9em;
-    }
-    #log li {
-      margin: 3px 0;
-    }
-    /* Neon Pop-up Modal */
-    #popupModal {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0,0,0,0.95);
-      display: none;
-      justify-content: center;
-      align-items: center;
-      z-index: 100;
-    }
-    /* Chaotic, Flashy Popup (American Flag Theme) */
-    #popupModalContent {
-      background: linear-gradient(45deg, #fff, #b22234, #fff, #3c3b6e);
-      color: #001f3f;
-      padding: 20px;
-      border: 3px solid #3c3b6e;
-      border-radius: 10px;
-      text-align: center;
-      max-width: 400px;
-      animation: chaoticPulse 0.5s infinite alternate;
-    }
-    #popupModalContent p {
-      font-size: 1.1em;
-      margin-bottom: 20px;
-    }
-    .popup-option {
-      margin: 10px;
-      padding: 10px 20px;
-      font-size: 1em;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      background: #b22234;
-      color: #fff;
-      transition: background 0.3s;
-    }
-    .popup-option:hover {
-      background: #3c3b6e;
-    }
-    /* Decision Timer */
-    #decisionTimer {
-      font-size: 1em;
-      margin-top: 10px;
-      color: #b22234;
-    }
-    @keyframes chaoticPulse {
-      0% { transform: scale(1) rotate(0deg); box-shadow: 0 0 10px #3c3b6e; }
-      25% { transform: scale(1.1) rotate(3deg); box-shadow: 0 0 20px #ff0000; }
-      50% { transform: scale(1) rotate(-3deg); box-shadow: 0 0 30px #ffffff; }
-      75% { transform: scale(1.1) rotate(3deg); box-shadow: 0 0 20px #3c3b6e; }
-      100% { transform: scale(1) rotate(0deg); box-shadow: 0 0 10px #b22234; }
-    }
-  </style>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>BAD MAILMAN - Neon Decisions 🇺🇸</title>
+    <style>
+        /* American Flag Red, White & Blue Theme */
+        body {
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #b22234 0%, #3c3b6e 100%);
+            color: #fff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            text-align: center;
+        }
+        #game-container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.95);
+            border: 3px solid #b22234;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.7);
+        }
+        h1 {
+            color: #3c3b6e;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            margin-bottom: 20px;
+        }
+        #stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            background: #f7f7f7;
+            border: 2px solid #b22234;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+            color: #001f3f;
+        }
+        .stat-item {
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+        #actions {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin: 15px 0;
+        }
+        button {
+            padding: 12px;
+            font-size: 1.1em;
+            border: 2px solid #b22234;
+            border-radius: 8px;
+            background: #b22234;
+            color: #fff;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+        }
+        button:hover {
+            background: #3c3b6e;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+        }
+        button:disabled {
+            background: #888;
+            cursor: not-allowed;
+        }
+        #modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        #modal-content {
+            background: linear-gradient(45deg, #fff, #b22234, #fff, #3c3b6e);
+            padding: 25px;
+            border-radius: 10px;
+            max-width: 500px;
+            text-align: center;
+            color: #001f3f;
+            animation: chaoticPulse 0.5s infinite alternate;
+        }
+        @keyframes chaoticPulse {
+            0% { transform: scale(1) rotate(0deg); box-shadow: 0 0 10px #3c3b6e; }
+            25% { transform: scale(1.1) rotate(3deg); box-shadow: 0 0 20px #ff0000; }
+            50% { transform: scale(1) rotate(-3deg); box-shadow: 0 0 30px #ffffff; }
+            75% { transform: scale(1.1) rotate(3deg); box-shadow: 0 0 20px #3c3b6e; }
+            100% { transform: scale(1) rotate(0deg); box-shadow: 0 0 10px #b22234; }
+        }
+        #game-log {
+            margin-top: 20px;
+            padding: 10px;
+            background: #f7f7f7;
+            border: 1px solid #b22234;
+            border-radius: 5px;
+            color: #001f3f;
+            height: 150px;
+            overflow-y: auto;
+        }
+        .log-entry {
+            margin: 5px 0;
+            padding: 5px;
+            border-bottom: 1px solid #ddd;
+            text-align: left;
+        }
+        #upcoming-tasks {
+            background: #f7f7f7;
+            border: 2px dashed #b22234;
+            padding: 10px;
+            margin: 15px 0;
+            border-radius: 5px;
+            color: #001f3f;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        #upcoming-tasks:hover {
+            background: #e7e7e7;
+            border-color: #3c3b6e;
+        }
+        
+        .hidden-list {
+            display: none;
+            color: #b22234;
+            font-style: italic;
+        }
+        #objective {
+            font-weight: bold;
+            margin: 15px 0;
+            color: #b22234;
+        }
+        #decision-timer {
+            font-size: 1.2em;
+            margin-top: 10px;
+            color: #b22234;
+            font-weight: bold;
+        }
+        .modal-option {
+            margin: 10px;
+            padding: 10px 20px;
+            font-size: 1.1em;
+            border: none;
+            border-radius: 5px;
+            background: #b22234;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .modal-option:hover {
+            background: #3c3b6e;
+            transform: translateY(-2px);
+        }
+        
+        /* Add pulsing effect for bad choices */
+        .tempting-choice {
+            animation: pulse 1.5s infinite;
+            border: 2px solid gold !important;
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); box-shadow: 0 0 15px rgba(255, 215, 0, 0.5); }
+            50% { transform: scale(1.05); box-shadow: 0 0 25px rgba(255, 215, 0, 0.8); }
+            100% { transform: scale(1); box-shadow: 0 0 15px rgba(255, 215, 0, 0.5); }
+        }
+
+        @keyframes flashyTitle {
+            0% { transform: scale(1); text-shadow: 0 0 10px #b22234; }
+            25% { transform: scale(1.05); text-shadow: 0 0 20px #3c3b6e; }
+            50% { transform: scale(1); text-shadow: 0 0 30px #b22234; }
+            75% { transform: scale(1.05); text-shadow: 0 0 20px #3c3b6e; }
+            100% { transform: scale(1); text-shadow: 0 0 10px #b22234; }
+        }
+
+        .welcome-title {
+            animation: flashyTitle 2s infinite;
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            background: linear-gradient(45deg, #b22234, #3c3b6e);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 10px rgba(255,255,255,0.5);
+        }
+
+        .welcome-message {
+            font-size: 1.2em;
+            color: #3c3b6e;
+            margin: 20px 0;
+            padding: 15px;
+            border: 2px solid #b22234;
+            border-radius: 10px;
+            background: rgba(255,255,255,0.9);
+            box-shadow: 0 0 15px rgba(60,59,110,0.3);
+        }
+    </style>
 </head>
 <body>
-  <div id="game-container">
-    <h1>BAD MAILMAN 🇺🇸</h1>
-    
-    <!-- Stats Panel -->
-    <div id="stats">
-      <p>Health: <span id="health">100</span></p>
-      <p>Cash: $<span id="cash">50</span></p>
-      <p>Level: <span id="level">1</span></p>
-      <p>Time Left: <span id="timer">120</span> s</p>
-      <p id="progress"></p>
+    <div id="game-container">
+        <h1>BAD MAILMAN 🇺🇸</h1>
+        
+        <!-- Main Menu -->
+        <div id="main-menu">
+            <button onclick="showStartMenu()">Start Game</button>
+        </div>
+
+        <!-- Game Content -->
+        <div id="game-content" style="display: none;">
+            <div id="stats">
+                <div class="stat-item">Health: <span id="health">100</span></div>
+                <div class="stat-item">Cash: $<span id="cash">50</span></div>
+                <div class="stat-item">Level: <span id="level">1</span>/3</div>
+                <div class="stat-item">Time: <span id="timer">180</span>s</div>
+            </div>
+
+            <div id="objective">
+                <h3>Current Mission:</h3>
+                <p>Next Delivery: <span id="current-address"></span> 🇺🇸</p>
+                <p>Deliveries: <span id="deliveries">0</span>/<span id="required-deliveries">3</span></p>
+                <p>Tasks: <span id="tasks">0</span>/<span id="required-tasks">3</span></p>
+            </div>
+
+            <div id="upcoming-tasks">
+                <h3>Delivery Information</h3>
+                <p>Current Delivery: <span id="current-address"></span></p>
+                <p>Time for delivery: <span id="task-timer">30</span>s</p>
+                <p class="hidden-list" id="upcoming-list"></p>
+                <p style="font-style: italic; color: #666;">Click to check delivery list</p>
+            </div>
+
+            <div id="actions">
+                <button onclick="performAction('deliver')">Deliver Mail</button>
+                <button onclick="performAction('water')">Drink Water</button>
+                <button onclick="performAction('lunch')">Take Lunch</button>
+                <button onclick="performAction('skip')">Skip Delivery</button>
+                <button onclick="performAction('drive')">Drive Carefully</button>
+                <button onclick="performAction('return')">Return to Office</button>
+                <button onclick="performAction('dog')">Play with Dog</button>
+                <button onclick="performAction('drink')">Take a Drink</button>
+            </div>
+
+            <div id="game-log"></div>
+        </div>
     </div>
-    
-    <!-- Objective Display -->
-    <div id="objectiveDisplay">
-      Complete 5 deliveries and 5 healthy tasks to level up!<br>
-      Next Delivery: Deliver to <span id="currentAddress"></span> 🇺🇸
+
+    <!-- Modal -->
+    <div id="modal">
+        <div id="modal-content">
+            <p id="modal-text"></p>
+            <div id="modal-options"></div>
+            <div id="decision-timer">Time: <span id="decision-time">5</span>s</div>
+        </div>
     </div>
-    
-    <!-- Upcoming Tasks Display (for deliveries) -->
-    <div id="upcomingTasks"></div>
-    
-    <!-- Instructions -->
-    <p id="instructions">
-      Objective: Complete 5 delivery tasks AND 5 healthy tasks (e.g., Drink Water, Take Lunch Break, Play with Dog) each level.
-    </p>
-    
-    <!-- Action Buttons Panel -->
-    <div id="actions">
-      <button id="deliverMail">Deliver Mail</button>
-      <button id="drinkWater">Drink Water</button>
-      <button id="takeLunch">Take Lunch Break</button>
-      <button id="skipDelivery">Skip Delivery</button>
-      <button id="driveCarefully">Drive Carefully</button>
-      <button id="returnOffice">Return to Office</button>
-      <button id="playWithDog">Play with Dog</button>
-      <button id="takeADrink">Take a Drink</button>
-    </div>
-    
-    <!-- Activity Log -->
-    <div id="log">
-      <h2>Activity Log 🇺🇸</h2>
-      <ul id="logList"></ul>
-    </div>
-  </div>
-  
-  <!-- Neon Pop-up Modal -->
-  <div id="popupModal">
-    <div id="popupModalContent">
-      <p id="popupText"></p>
-      <div id="popupOptions"></div>
-      <div id="decisionTimer">Time: <span id="decisionTime">5</span>s</div>
-    </div>
-  </div>
-  
-  <script>
-    /*******************
-     * GLOBAL GAME STATE
-     *******************/
-    let health = 100,
-        cash = 50,
-        experience = 0,
-        level = 1,
-        timer = 120, // Overall game timer in seconds
-        clickCount = 0;
-    let decisionTime = 5; // Popup decision timer in seconds
-    let decisionInterval = null;
-    
-    // Level progress variables:
-    const requiredDeliveryTasks = 5;
-    const requiredHealthyTasks = 5;
-    let deliveryCount = 0;
-    let healthyCount = 0;
-    
-    // Track current custom scenario key (if any)
-    let currentScenarioKey = "";
-    
-    // Timer for the current delivery task (for upcoming tasks)
-    let taskTimer = 30; // seconds
-    
-    // UTILITY FUNCTION
-    function getRandomInt(min, max) {
-      return Math.floor(Math.random() * (max - min + 1)) + min;
-    }
-    
-    // ADDRESS LIST (50 Bristol, CT Streets)
-    const addresses = [
-      "1 Main St", "2 Broad St", "3 Church St", "4 Washington St", "5 West St",
-      "6 East St", "7 North St", "8 South St", "9 Maple Ave", "10 Oak St",
-      "11 Pine St", "12 Cedar St", "13 Birch St", "14 Elm St", "15 Spruce St",
-      "16 Cherry St", "17 Walnut St", "18 Chestnut St", "19 Hickory St", "20 Sycamore St",
-      "21 Main St", "22 Broadway", "23 King St", "24 Queen St", "25 Irving St",
-      "26 Jerome Ave", "27 Illinois Ave", "28 Maple Dr", "29 Park Ave", "30 Sunset Blvd",
-      "31 Main Ave", "32 Oak Ave", "33 Elm Ave", "34 Church Ave", "35 Washington Ave",
-      "36 West Ave", "37 East Ave", "38 North Ave", "39 South Ave", "40 Central St",
-      "41 Union St", "42 Prospect St", "43 Pleasant St", "44 River Rd", "45 Mill St",
-      "46 Bridge St", "47 Mill Rd", "48 Mill Ave", "49 College St", "50 Market St"
-    ];
-    let currentAddress = addresses[getRandomInt(0, addresses.length - 1)];
-    
-    // Helper to get a random address excluding a given one
-    function getRandomAddressExcluding(excluded) {
-      let filtered = addresses.filter(addr => addr !== excluded);
-      return filtered[getRandomInt(0, filtered.length - 1)];
-    }
-    
-    // GOOD MAILMAN ACTIVITIES (50 items)
-    const goodActivities = [
-      "Deliver mail on time – Earn bonus points!",
-      "Follow all traffic laws – Stay safe and avoid penalties.",
-      "Pet a friendly cat – Boosts your morale and health.",
-      "Play with a happy dog – Increases your energy.",
-      "Drink water – Keep hydrated and maintain health.",
-      "Take a proper lunch break – Restores energy.",
-      "Arrive at a new mail drop on time – Unlocks route bonuses.",
-      "Return to the office promptly – Gains supervisor approval.",
-      "Drive the mail truck carefully – Prevents accidents.",
-      "Deliver packages accurately – Earns extra cash.",
-      "Greet customers cheerfully – Boosts customer tips!",
-      "Sort mail efficiently – Speeds up your route.",
-      "Take rejuvenating short breaks – Recovers health.",
-      "Refuel the truck promptly – Avoids breakdowns.",
-      "Pay attention to road signs – Keeps you on track.",
-      "Accept friendly tips from customers – Increases cash balance.",
-      "Avoid distractions – Maintains focus on the task.",
-      "Listen to motivational podcasts – Boosts your overall performance.",
-      "Follow GPS directions accurately – Saves time.",
-      "Park the truck safely – Avoids minor accidents.",
-      "Take regular health checks – Ensures you’re in top shape.",
-      "Keep the vehicle clean – Impresses your supervisor.",
-      "Enjoy scenic routes – Provides a temporary health boost.",
-      "Handle fragile packages with care – Gains extra rewards.",
-      "Plan your route efficiently – Saves time and energy.",
-      "Help elderly neighbors with their mail – Earns community points.",
-      "Pick up additional packages correctly – Boosts cash earnings.",
-      "Smile at every doorstep – Increases your reputation.",
-      "Verify addresses twice – Prevents delivery errors.",
-      "Offer assistance to confused customers – Gains extra tips.",
-      "Receive compliments on your service – Improves job stability.",
-      "Follow supervisor instructions – Maintains employment.",
-      "Avoid speeding – Keeps you safe and on schedule.",
-      "Maintain positive energy – Improves overall performance.",
-      "Keep a tidy uniform – Impresses your boss.",
-      "Interact nicely with coworkers – Builds team support.",
-      "Enjoy a balanced, healthy snack – Boosts your stamina.",
-      "Appreciate nice weather – Enhances your mood.",
-      "Listen to uplifting music – Increases focus.",
-      "Follow proper safety protocols – Reduces risk of accidents.",
-      "Double-check deliveries – Prevents mistakes.",
-      "Navigate difficult streets carefully – Maintains health.",
-      "Take time to pet friendly dogs – Provides an energy boost.",
-      "Use your map effectively – Avoids getting lost.",
-      "Offer extra help during inclement weather – Gains bonus rewards.",
-      "Stay alert to avoid accidents – Keeps you in the game.",
-      "Practice defensive driving – Improves safety stats.",
-      "Participate in friendly competitions – Earns extra cash.",
-      "Earn daily bonuses for perfect shifts – Increases your level.",
-      "Maintain a healthy cash balance – Allows for upgrades and bonuses."
-    ];
-    
-    // BAD MAILMAN ACTIVITIES (50 items)
-    const badActivities = [
-      "Drink on the job – Immediately lowers your health.",
-      "Skip a scheduled mail delivery – Risks customer complaints.",
-      "Deliver to the wrong address – Costs cash and reputation.",
-      "Be late to a mail drop – Causes time penalties.",
-      "Run over a pedestrian – Massive health and job penalties.",
-      "Ignore traffic signals – Leads to accidents.",
-      "Text while driving – Distracts you and reduces health.",
-      "Overindulge in shots – Drastically depletes your energy.",
-      "Accept under-the-table drinks – Invites trouble with the boss.",
-      "Get lost on your route – Wastes precious time.",
-      "Arrive too early or too late at the office – Displeases your supervisor.",
-      "Ignore a cat’s need for petting – Lowers your morale.",
-      "Deliver mail to the wrong mailbox – Causes rework and penalties.",
-      "Get into a fight with a customer – Reduces both health and cash.",
-      "Miss a scheduled water break – Causes dehydration penalties.",
-      "Skip your lunch break – Drains your energy.",
-      "Get pulled over for a traffic violation – Costs cash and time.",
-      "Take a dangerous detour – Increases risk of accidents.",
-      "Forget to refuel the truck – Risks a breakdown.",
-      "Stop at a bar instead of the office – Hurts your job standing.",
-      "Speed excessively – Increases accident risk.",
-      "Collide with obstacles (like trees) – Drastically lowers your health.",
-      "Fail to signal turns – Risks causing crashes.",
-      "Hit potholes recklessly – Damages your vehicle and health.",
-      "Skip essential vehicle safety checks – Increases accident potential.",
-      "Answer personal calls while driving – Distracts you and wastes time.",
-      "Tear up the mail bag – Costs extra repair time.",
-      "Take unauthorized long breaks – Frustrates your supervisor.",
-      "Forget to deliver registered mail – Results in penalties.",
-      "Mess up the mail order – Confuses customers and loses cash.",
-      "Drop mail on the ground – Lowers customer satisfaction.",
-      "Engage in street racing – Drains your cash with fines.",
-      "Disobey traffic laws blatantly – Increases accident risk.",
-      "Ignore supervisor instructions – Endangers your job.",
-      "Take risky shortcuts – Leads to unexpected hazards.",
-      "Overgive change to customers – Loses cash unnecessarily.",
-      "Lose your mail keys – Causes delays and penalties.",
-      "Misplace a crucial package – Reduces customer trust.",
-      "Argue with coworkers – Affects team morale.",
-      "Ram a parked vehicle – Causes heavy repairs and cash loss.",
-      "Take unapproved detours – Confuses the route.",
-      "Ignore customer instructions – Results in delivery errors.",
-      "Overeat junk food on the job – Drains your health.",
-      "Fail to pick up an urgent package – Costs extra time.",
-      "Drink and drive – Drastically reduces your health.",
-      "Take a nap on duty – Gets you fired instantly.",
-      "Overspend on personal expenses during work – Drains your cash balance.",
-      "Engage in illegal side hustles – Risks job termination.",
-      "Drive with reckless abandon – Increases accident frequency.",
-      "Neglect scheduled work responsibilities – Leads to instant game over."
-    ];
-    
-    // EXTRA OPTIONS (e.g., Gamble, Smoke Weed, Do Cocaine)
-    const extraOptions = [
-      { text: "Gamble", effect: { health: -5, cash: +30, exp: +2 }, outcome: "You gambled and got lucky!" },
-      { text: "Smoke Weed", effect: { health: -10, cash: 0, exp: +1 }, outcome: "You smoked weed—your focus wavered." },
-      { text: "Do Cocaine", effect: { health: -15, cash: +20, exp: +1 }, outcome: "You did cocaine; cash flowed but your health suffered." }
-    ];
-    
-    // POP-UP SCENARIOS
-    const popups = [
-      {
-        type: "delivery",
-        text: "Next: Deliver to [ADDRESS]. Choose the correct address:",
-        options: [] // Options for delivery will be generated dynamically.
-      },
-      {
-        type: "activity",
-        text: "Choose your next action:",
-        options: []  // To be filled dynamically.
-      },
-      {
-        type: "goBad",
-        text: "You're feeling chaotic! Which tempting option do you choose?",
-        options: [
-          { text: "Gamble for a jackpot!", effect: { health: -5, cash: -30, exp: +2 }, outcome: "You gambled and lost more than you won!", delivery: false },
-          { text: "Take a wild swig!", effect: { health: -10, cash: -20, exp: +1 }, outcome: "That wild swig took a toll on you!", delivery: false },
-          { text: "Do cocaine for a high!", effect: { health: -15, cash: -20, exp: +1 }, outcome: "The high wasn’t worth the cost!", delivery: false },
-          { text: "Wear a Super Fun Hat!", effect: { health: -10, cash: -10, exp: +3 }, outcome: "You rocked a super fun hat—but it cost you dearly!", delivery: false }
-        ]
-      }
-    ];
-    
-    // NEW FUNCTION: showDeliveryPopup
-    function showDeliveryPopup(scenario) {
-      // Replace token with current address.
-      let text = scenario.text.replace("[ADDRESS]", currentAddress);
-      document.getElementById("popupText").textContent = text;
-      
-      // Build exactly three options: one correct and two wrong.
-      let correctOption = { 
-        text: currentAddress, 
-        effect: { health: 10, cash: 20, exp: 5 }, 
-        outcome: "You deliver the mail perfectly!", 
-        delivery: true 
-      };
-      let wrongOption1 = { 
-        text: getRandomAddressExcluding(currentAddress), 
-        effect: { health: -10, cash: -5, exp: 1 }, 
-        outcome: "Wrong address! Delivery failed.", 
-        delivery: false 
-      };
-      let wrongOption2 = { 
-        text: getRandomAddressExcluding(currentAddress), 
-        effect: { health: -10, cash: -5, exp: 1 }, 
-        outcome: "Wrong address! Delivery failed.", 
-        delivery: false 
-      };
-      
-      let optionsArray = [correctOption, wrongOption1, wrongOption2];
-      
-      // Shuffle the options.
-      for (let i = optionsArray.length - 1; i > 0; i--) {
-        const j = getRandomInt(0, i);
-        [optionsArray[i], optionsArray[j]] = [optionsArray[j], optionsArray[i]];
-      }
-      
-      let optionsDiv = document.getElementById("popupOptions");
-      optionsDiv.innerHTML = "";
-      optionsArray.forEach(option => {
-        let btn = document.createElement("button");
-        btn.textContent = option.text;
-        btn.className = "popup-option";
-        btn.addEventListener("click", function() {
-          clearInterval(decisionInterval);
-          processPopupChoice(option);
-        });
-        optionsDiv.appendChild(btn);
-      });
-      
-      decisionTime = 5;
-      document.getElementById("decisionTime").textContent = decisionTime;
-      document.getElementById("popupModal").style.display = "flex";
-      
-      decisionInterval = setInterval(function() {
-        decisionTime--;
-        document.getElementById("decisionTime").textContent = decisionTime;
-        if (decisionTime <= 0) {
-          clearInterval(decisionInterval);
-          let defaultEffect = { health: -15, cash: -10, exp: 0 };
-          health += defaultEffect.health;
-          cash += defaultEffect.cash;
-          logAction("You hesitated! Lost 15 Health and $10.");
-          updateStats();
-          hidePopup();
-          shuffleButtons();
-        }
-      }, 1000);
-    }
-    
-    // Modified showCustomPopup: if scenario.type is "delivery", use showDeliveryPopup.
-    function showCustomPopup(scenario) {
-      if (scenario.type === "delivery") {
-        showDeliveryPopup(scenario);
-        return;
-      }
-      let text = scenario.text;
-      if (text.includes("[ADDRESS]")) {
-        text = text.replace("[ADDRESS]", currentAddress);
-      }
-      document.getElementById("popupText").textContent = text;
-      
-      let optionsDiv = document.getElementById("popupOptions");
-      optionsDiv.innerHTML = "";
-      let optionsArray = scenario.options.slice();
-      for (let i = optionsArray.length - 1; i > 0; i--) {
-        const j = getRandomInt(0, i);
-        [optionsArray[i], optionsArray[j]] = [optionsArray[j], optionsArray[i]];
-      }
-      optionsArray.forEach(option => {
-        if (option.text === "[ADDRESS]") {
-          option.text = currentAddress;
-        } else if (option.text === "[WRONG]") {
-          option.text = getRandomAddressExcluding(currentAddress);
-        }
-        let btn = document.createElement("button");
-        btn.textContent = option.text;
-        btn.className = "popup-option";
-        btn.addEventListener("click", function() {
-          clearInterval(decisionInterval);
-          processPopupChoice(option);
-        });
-        optionsDiv.appendChild(btn);
-      });
-      
-      decisionTime = 5;
-      document.getElementById("decisionTime").textContent = decisionTime;
-      document.getElementById("popupModal").style.display = "flex";
-      
-      decisionInterval = setInterval(function() {
-        decisionTime--;
-        document.getElementById("decisionTime").textContent = decisionTime;
-        if (decisionTime <= 0) {
-          clearInterval(decisionInterval);
-          let defaultEffect = { health: -15, cash: -10, exp: 0 };
-          health += defaultEffect.health;
-          cash += defaultEffect.cash;
-          logAction("You hesitated! Lost 15 Health and $10.");
-          updateStats();
-          hidePopup();
-          shuffleButtons();
-        }
-      }, 1000);
-    }
-    
-    // Modified showGenericPopup: if scenario.type is "delivery", use showDeliveryPopup.
-    function showGenericPopup() {
-      let scenario;
-      if (Math.random() < 0.3) {
-        scenario = popups.find(s => s.type === "goBad");
-      } else if (clickCount % 2 === 0) {
-        scenario = popups.find(s => s.type === "delivery");
-      } else {
-        scenario = popups.find(s => s.type === "activity");
-        let goodOption = {
-          text: goodActivities[getRandomInt(0, goodActivities.length - 1)],
-          effect: getRandomGoodEffect(),
-          outcome: "You did something good!",
-          delivery: false
+
+    <script>
+        // Constants
+        const ADDRESSES = [
+            // Irving Variations
+            "42 Irving St", "42 Irving Dr", "42 Irving Ave", "42 Irving Ct",
+            "44 Irving St", "44 Irving Dr", "44 Irving Ave", "44 Irving Ct",
+            "46 Irving St", "46 Irving Dr", "46 Irving Ave", "46 Irving Ct",
+            // Washington Variations
+            "101 Washington St", "101 Washington Ave", "101 Washington Blvd", "101 Washington Dr",
+            "103 Washington St", "103 Washington Ave", "103 Washington Blvd", "103 Washington Dr",
+            // Oak Variations
+            "220 Oak St", "220 Oak Ave", "220 Oak Ln", "220 Oak Circle",
+            "222 Oak St", "222 Oak Ave", "222 Oak Ln", "222 Oak Circle",
+            // Maple Variations
+            "335 Maple Dr", "335 Maple St", "335 Maple Ave", "335 Maple Ct",
+            "337 Maple Dr", "337 Maple St", "337 Maple Ave", "337 Maple Ct"
+        ];
+
+        const ORIGIN_STORY = [
+            "You were once a dedicated mailman, loved by your community. Your route was perfect, your smile genuine.",
+            "Then the economy crashed. Your pension vanished overnight. Medical bills piled up after your work injury.",
+            "Your wife needed expensive surgery, but insurance denied the claim. She left, taking the kids and your hope.",
+            "The drinking started small - just to numb the pain. The gambling seemed like a way out. The loan sharks came.",
+            "Your supervisor denied your overtime, laughing about his new boat while you ate cold soup in your car.",
+            "The local gangs saw your desperation. They offered quick cash for 'misplacing' certain packages.",
+            "One 'lost' package became two, then ten. The money was good, and nobody seemed to care anymore.",
+            "Your old partner reported some missing mail. Next day, he had a 'mysterious' accident. The message was clear.",
+            "Now you're in too deep. Each delivery is a chance to either crawl back to dignity or embrace the corruption.",
+            "The system broke you. Will you try to fix it, or burn it all down?"
+        ];
+
+        // Add more complex temptation scenarios
+        const TEMPTATIONS = [
+            {
+                text: "A shady character offers you some 'premium powder' for quick energy...",
+                options: [
+                    { text: "Take cocaine (+Energy, +Cash)", effect: { health: -20, cash: 30, type: "bad" }, outcome: "The powder gives you a rush, but at what cost?" },
+                    { text: "Deal some on your route (+Big Cash!)", effect: { health: -30, cash: 100, type: "bad" }, outcome: "You're a dealer now. The money's good, but your soul..." },
+                    { text: "Stick to coffee", effect: { health: 5, cash: -5, type: "good" }, outcome: "You stay clean, but feel the grind." },
+                    { text: "Report to police (+Karma)", effect: { health: 10, cash: 10, type: "good" }, outcome: "Doing the right thing feels good, but was it worth it?" }
+                ]
+            },
+            {
+                text: "You spot an illegal gambling den in your route...",
+                options: [
+                    { text: "Place a small bet (+Cash?)", effect: { health: -10, cash: 50, type: "bad" }, outcome: "Lucky streak! But the addiction grows..." },
+                    { text: "Go all in! (+Big Cash?!)", effect: { health: -25, cash: 150, type: "bad" }, outcome: "JACKPOT! But at what cost to your sanity?" },
+                    { text: "Become a bookie (+Steady Cash)", effect: { health: -20, cash: 80, type: "bad" }, outcome: "The house always wins, and now you're the house." },
+                    { text: "Keep walking", effect: { health: 5, cash: 0, type: "good" }, outcome: "Your wallet's lighter but your conscience is clear." }
+                ]
+            },
+            {
+                text: "A suspicious package feels heavy with cash...",
+                options: [
+                    { text: "Steal it (+Cash)", effect: { health: -15, cash: 40, type: "bad" }, outcome: "Easy money, but your soul feels heavier." },
+                    { text: "Sell info to thieves (+Big Cash)", effect: { health: -25, cash: 120, type: "bad" }, outcome: "You're part of a criminal network now." },
+                    { text: "Deliver properly", effect: { health: 5, cash: 5, type: "good" }, outcome: "Integrity intact, but poverty continues." },
+                    { text: "'Lose' it accidentally", effect: { health: -10, cash: 25, type: "bad" }, outcome: "Plausible deniability, but guilt gnaws at you." }
+                ]
+            },
+            {
+                text: "Your supervisor's drawer is open, revealing payroll...",
+                options: [
+                    { text: "Take a 'bonus' (+Cash)", effect: { health: -15, cash: 45, type: "bad" }, outcome: "The money's good, but paranoia sets in." },
+                    { text: "Blackmail opportunity (+Regular Cash)", effect: { health: -20, cash: 70, type: "bad" }, outcome: "Power feels good, but you're becoming the villain." },
+                    { text: "Close the drawer", effect: { health: 5, cash: 0, type: "good" }, outcome: "Honesty doesn't pay the bills, but you sleep better." },
+                    { text: "Plant evidence (-Boss?)", effect: { health: -25, cash: 100, type: "bad" }, outcome: "Your boss is gone, but you're becoming a monster." }
+                ]
+            },
+            {
+                text: "A local gang offers protection and benefits...",
+                options: [
+                    { text: "Join them (+Power, +Cash)", effect: { health: -30, cash: 150, type: "bad" }, outcome: "You're protected now, but at what cost?" },
+                    { text: "Become informant (+Both Sides)", effect: { health: -25, cash: 90, type: "bad" }, outcome: "Playing both sides is profitable but dangerous." },
+                    { text: "Decline politely", effect: { health: -10, cash: -20, type: "good" }, outcome: "You stay clean, but they're watching you." },
+                    { text: "Threaten to report them", effect: { health: -40, cash: -50, type: "good" }, outcome: "Brave but foolish. Watch your back." }
+                ]
+            }
+        ];
+
+        // Add more chaotic random events
+        const CHAOS_EVENTS = [
+            {
+                text: "Your mail truck's brakes feel loose on a hill...",
+                options: [
+                    { text: "Crash into expensive cars (+Insurance Scam)", effect: { health: -30, cash: 200, type: "bad" }, outcome: "The 'accident' pays well, but your body aches..." },
+                    { text: "Risk the hill anyway (+Thrill)", effect: { health: -20, cash: 0, type: "bad" }, outcome: "Pure adrenaline rush, but at what cost?" },
+                    { text: "Report for maintenance (-Time)", effect: { health: 5, cash: -20, type: "good" }, outcome: "Safety first, but your wallet suffers." }
+                ]
+            },
+            {
+                text: "Police lights flash behind you. The trunk has 'special' packages...",
+                options: [
+                    { text: "Run for it! (+Excitement)", effect: { health: -40, cash: -50, type: "bad" }, outcome: "The chase was wild, but you're shaking..." },
+                    { text: "Bribe the officer (+Corrupt)", effect: { health: -10, cash: -100, type: "bad" }, outcome: "Another soul joins the darkness." },
+                    { text: "Face the music (-Freedom)", effect: { health: -50, cash: -200, type: "good" }, outcome: "Honesty hurts... a lot." }
+                ]
+            },
+            {
+                text: "Your truck breaks down in gang territory...",
+                options: [
+                    { text: "Join their operation (+Protection)", effect: { health: -20, cash: 150, type: "bad" }, outcome: "You're part of the family now..." },
+                    { text: "Offer them mail routes (+Business)", effect: { health: -15, cash: 100, type: "bad" }, outcome: "A profitable partnership begins." },
+                    { text: "Call for backup (-Pride)", effect: { health: -10, cash: -30, type: "good" }, outcome: "The wait was long, but you stayed clean." }
+                ]
+            },
+            {
+                text: "You find undelivered mail from months ago in the warehouse...",
+                options: [
+                    { text: "Sell personal info (+Quick Cash)", effect: { health: -25, cash: 180, type: "bad" }, outcome: "Identity theft pays well..." },
+                    { text: "Burn it all (+Cover-up)", effect: { health: -15, cash: 50, type: "bad" }, outcome: "The evidence goes up in smoke." },
+                    { text: "Report it (-Career)", effect: { health: -20, cash: -40, type: "good" }, outcome: "Your honesty is not appreciated." }
+                ]
+            }
+        ];
+
+        // Game state
+        let gameState = {
+            health: 100,
+            cash: 50,
+            level: 1,
+            timer: 180,
+            deliveries: 0,
+            tasks: 0,
+            gameInterval: null,
+            taskTimer: 30,
+            taskInterval: null,
+            decisionTimer: null,
+            currentAddress: "",
+            upcomingDeliveries: [],
+            storyIndex: 0,
+            badChoices: 0,
+            goodChoices: 0,
+            decisionTime: 8,
+            showOriginStory: false,
+            lastDogInteraction: 0,
+            dogInteractions: 0,
+            usedAddresses: new Set(),
+            currentLevelDeliveries: []
         };
-        let badOption = {
-          text: badActivities[getRandomInt(0, badActivities.length - 1)],
-          effect: getRandomBadEffect(),
-          outcome: "You did something bad!",
-          delivery: false
+
+        // Level configurations with varying challenges
+        const LEVELS = {
+            1: {
+                deliveries: 3,
+                tasks: 3,
+                timeBonus: 60,
+                actions: {
+                    deliver: { reward: 10, health: -5, type: "delivery" },
+                    water: { reward: 5, health: 10, type: "task" },
+                    lunch: { reward: -5, health: 15, type: "task" },
+                    skip: { reward: -10, health: 0, type: "none" },
+                    check: { reward: -10, health: -5, type: "none" },
+                    return: { reward: -20, health: -10, type: "none" },
+                    rest: { reward: 0, health: 20, type: "task" },
+                    organize: { reward: 5, health: 5, type: "task" },
+                    exercise: { reward: -5, health: 15, type: "task" }
+                }
+            },
+            2: {
+                deliveries: 4,
+                tasks: 4,
+                timeBonus: 90,
+                actions: {
+                    deliver: { reward: 15, health: -8, type: "delivery" },
+                    steal: { reward: 30, health: -20, type: "bad" },
+                    water: { reward: 8, health: 12, type: "task" },
+                    drugs: { reward: -20, health: 25, type: "bad" },
+                    gamble: { reward: -30, health: -15, type: "bad" },
+                    check: { reward: -15, health: -8, type: "none" },
+                    lunch: { reward: -8, health: 18, type: "task" },
+                    bribe: { reward: 25, health: -15, type: "bad" },
+                    exercise: { reward: -8, health: 20, type: "task" }
+                }
+            },
+            3: {
+                deliveries: 5,
+                tasks: 5,
+                timeBonus: 120,
+                actions: {
+                    deliver: { reward: 20, health: -12, type: "delivery" },
+                    scam: { reward: 50, health: -25, type: "bad" },
+                    water: { reward: 12, health: 15, type: "task" },
+                    dealer: { reward: 100, health: -40, type: "bad" },
+                    extort: { reward: 40, health: -30, type: "bad" },
+                    check: { reward: -20, health: -10, type: "none" },
+                    lunch: { reward: -10, health: 20, type: "task" },
+                    crime: { reward: 150, health: -50, type: "bad" },
+                    exercise: { reward: -10, health: 25, type: "task" }
+                }
+            }
         };
-        let optionsArray = [goodOption, badOption];
-        if (Math.random() < 0.5) {
-          let extraOption = extraOptions[getRandomInt(0, extraOptions.length - 1)];
-          optionsArray.push(extraOption);
+
+        // Game functions
+        function showStartMenu() {
+            const mainMenu = document.getElementById("main-menu");
+            mainMenu.innerHTML = `
+                <h1 class="welcome-title">BAD MAILMAN 🇺🇸</h1>
+                <div class="welcome-message">
+                    <p>⏱️ 3 INTENSE LEVELS - EACH TIMED!</p>
+                    <p>🎯 Complete deliveries, maintain health, earn cash</p>
+                    <p>⚠️ But beware... temptation lurks around every corner...</p>
+                </div>
+            `;
+            
+            showTimedChoice(
+                "Ready to begin your descent?",
+                [
+                    { text: "Quick Start ⚡", effect: { type: "start" }, outcome: "Starting game..." },
+                    { text: "Origin Story 📖", effect: { type: "origin" }, outcome: "Loading origin story..." }
+                ],
+                8,
+                (choice) => {
+                    if (choice.effect.type === "origin") {
+                        gameState.showOriginStory = true;
+                        startOriginStory();
+                    } else {
+                        gameState.showOriginStory = false;
+                        startGame();
+                    }
+                }
+            );
         }
-        scenario.options = optionsArray;
-      }
-      
-      if (scenario.type === "delivery") {
-        showDeliveryPopup(scenario);
-        return;
-      }
-      
-      let scenarioText = scenario.text;
-      if (scenarioText.includes("[ADDRESS]")) {
-        scenarioText = scenarioText.replace("[ADDRESS]", currentAddress);
-      }
-      document.getElementById("popupText").textContent = scenarioText;
-      
-      let optionsDiv = document.getElementById("popupOptions");
-      optionsDiv.innerHTML = "";
-      let optionsArray = scenario.options.slice();
-      for (let i = optionsArray.length - 1; i > 0; i--) {
-        const j = getRandomInt(0, i);
-        [optionsArray[i], optionsArray[j]] = [optionsArray[j], optionsArray[i]];
-      }
-      optionsArray.forEach(option => {
-        if (option.text === "[ADDRESS]") {
-          option.text = currentAddress;
-        } else if (option.text === "[WRONG]") {
-          option.text = getRandomAddressExcluding(currentAddress);
+
+        function startOriginStory() {
+            gameState.storyIndex = 0;
+            showModal(ORIGIN_STORY[0], [{ text: "Next", action: nextStory }]);
         }
-        let btn = document.createElement("button");
-        btn.textContent = option.text;
-        btn.className = "popup-option";
-        btn.addEventListener("click", function() {
-          clearInterval(decisionInterval);
-          processPopupChoice(option);
-        });
-        optionsDiv.appendChild(btn);
-      });
-      
-      decisionTime = 5;
-      document.getElementById("decisionTime").textContent = decisionTime;
-      document.getElementById("popupModal").style.display = "flex";
-      
-      decisionInterval = setInterval(function() {
-        decisionTime--;
-        document.getElementById("decisionTime").textContent = decisionTime;
-        if (decisionTime <= 0) {
-          clearInterval(decisionInterval);
-          let defaultEffect = { health: -15, cash: -10, exp: 0 };
-          health += defaultEffect.health;
-          cash += defaultEffect.cash;
-          logAction("You hesitated! Lost 15 Health and $10.");
-          updateStats();
-          hidePopup();
-          shuffleButtons();
+
+        function nextStory() {
+            gameState.storyIndex++;
+            if (gameState.storyIndex < ORIGIN_STORY.length) {
+                showModal(ORIGIN_STORY[gameState.storyIndex], [{ text: "Next", action: nextStory }]);
+            } else {
+                hideModal();
+                startGame();
+            }
         }
-      }, 1000);
-    }
-    
-    function hidePopup() {
-      document.getElementById("popupModal").style.display = "none";
-    }
-    
-    function processPopupChoice(option) {
-      health += option.effect.health;
-      cash += option.effect.cash;
-      experience += option.effect.exp;
-      updateLevel();
-      updateStats();
-      logAction(option.outcome);
-      
-      if (option.delivery) {
-        logAction("Delivery completed at " + currentAddress + "!");
-        upcomingTasks.shift();
-        upcomingTasks.push(addresses[getRandomInt(0, addresses.length - 1)]);
-        updateUpcomingTasksDisplay();
-        taskTimer = 30;
-        currentAddress = upcomingTasks[0];
-        updateObjective();
-      }
-      
-      if (currentScenarioKey && customScenarios[currentScenarioKey] && customScenarios[currentScenarioKey].taskType) {
-        let taskType = customScenarios[currentScenarioKey].taskType;
-        if (taskType === "delivery" && option.delivery) {
-          deliveryCount++;
-          logAction("Delivery task completed! (" + deliveryCount + "/" + requiredDeliveryTasks + ")");
-        } else if (taskType === "health" && option.effect.health > 0) {
-          healthyCount++;
-          logAction("Healthy task completed! (" + healthyCount + "/" + requiredHealthyTasks + ")");
+
+        function startGame() {
+            resetGameState();
+            document.getElementById("main-menu").style.display = "none";
+            document.getElementById("game-content").style.display = "block";
+            initializeDeliveries();
+            
+            // Show initial delivery list with 10-second timer
+            showTimedChoice(
+                `🚨 MEMORIZE YOUR DELIVERIES! 🚨\n\n${gameState.upcomingDeliveries.join(" → ")}\n\nYou have 10 seconds to memorize these addresses.\nLevel 1: Address list visible\nLevel 2-3: Must pay to check list\n\nThe criminal path is always easier...`,
+                [{ text: "I'm Ready!", effect: { type: "start" }, outcome: "Starting game..." }],
+                10,
+                () => {
+                    hideModal();
+                    startTimers();
+                    updateUI();
+                    updateButtons();
+                    addToLog("Game started! The honest path awaits... for now.");
+                    updateDeliveryListVisibility();
+                }
+            );
         }
-        updateStats();
-        if (deliveryCount >= requiredDeliveryTasks && healthyCount >= requiredHealthyTasks) {
-          level++;
-          logAction("LEVEL UP! You are now level " + level + "!");
-          deliveryCount = 0;
-          healthyCount = 0;
-          updateStats();
+
+        function resetGameState() {
+            gameState = {
+                health: 100,
+                cash: 50,
+                level: 1,
+                timer: 180,
+                deliveries: 0,
+                tasks: 0,
+                gameInterval: null,
+                taskTimer: 30,
+                taskInterval: null,
+                decisionTimer: null,
+                currentAddress: "",
+                upcomingDeliveries: [],
+                storyIndex: 0,
+                badChoices: 0,
+                goodChoices: 0,
+                decisionTime: 8,
+                showOriginStory: false,
+                lastDogInteraction: 0,
+                dogInteractions: 0,
+                usedAddresses: new Set(),
+                currentLevelDeliveries: []
+            };
         }
-      }
-      
-      hidePopup();
-      shuffleButtons();
-    }
-    
-    // UPCOMING TASKS (for deliveries)
-    let upcomingTasks = [];
-    function initUpcomingTasks() {
-      upcomingTasks = [];
-      for (let i = 0; i < 5; i++) {
-        upcomingTasks.push(addresses[getRandomInt(0, addresses.length - 1)]);
-      }
-      updateUpcomingTasksDisplay();
-      currentAddress = upcomingTasks[0];
-      updateObjective();
-    }
-    
-    function updateUpcomingTasksDisplay() {
-      let div = document.getElementById("upcomingTasks");
-      div.innerHTML = "<strong>Upcoming Deliveries:</strong><br>" +
-                      upcomingTasks.join(", ") +
-                      "<br>Delivery Task Timer: " + taskTimer + " s";
-    }
-    
-    // Global Delivery Task Timer.
-    setInterval(function() {
-      if (taskTimer > 0) {
-        taskTimer--;
-        updateUpcomingTasksDisplay();
-      } else {
-        logAction("You failed to complete the delivery in time! Lost 15 Health and $10.");
-        health -= 15;
-        cash -= 10;
-        updateStats();
-        deliveryCount++;  // Count missed delivery as completed (if desired)
-        upcomingTasks.shift();
-        upcomingTasks.push(addresses[getRandomInt(0, addresses.length - 1)]);
-        updateUpcomingTasksDisplay();
-        taskTimer = 30;
-        currentAddress = upcomingTasks[0];
-        updateObjective();
-        if (deliveryCount >= requiredDeliveryTasks && healthyCount >= requiredHealthyTasks) {
-          level++;
-          deliveryCount = 0;
-          healthyCount = 0;
-          logAction("LEVEL UP! You are now level " + level + "!");
-          updateStats();
+
+        function initializeDeliveries() {
+            // Reset used addresses when starting a new level
+            gameState.usedAddresses = new Set();
+            gameState.currentLevelDeliveries = [];
+            
+            // Get fresh addresses for this level
+            let availableAddresses = ADDRESSES.filter(addr => !gameState.usedAddresses.has(addr));
+            
+            // If we're running low on addresses, reset the used addresses
+            if (availableAddresses.length < 5) {
+                gameState.usedAddresses.clear();
+                availableAddresses = [...ADDRESSES];
+            }
+
+            // Select 5 random addresses for this level
+            for (let i = 0; i < 5; i++) {
+                const randomIndex = Math.floor(Math.random() * availableAddresses.length);
+                const selectedAddress = availableAddresses[randomIndex];
+                gameState.currentLevelDeliveries.push(selectedAddress);
+                gameState.usedAddresses.add(selectedAddress);
+                availableAddresses.splice(randomIndex, 1);
+            }
+
+            gameState.currentAddress = gameState.currentLevelDeliveries[0];
+            updateUpcomingDeliveries();
         }
-      }
-    }, 1000);
-    
-    // MAIN GAME FUNCTION
-    function mainAction(actionName) {
-      currentScenarioKey = actionName;
-      clickCount++;
-      logAction("Action chosen: " + actionName + " 🇺🇸");
-      updateObjective();
-      if (actionName === "Deliver Mail") {
-        showCustomPopup(customScenarios["Deliver Mail"]);
-      } else if (customScenarios[actionName]) {
-        showCustomPopup(customScenarios[actionName]);
-      } else {
-        showGenericPopup();
-      }
-    }
-    
-    // BUTTON EVENT LISTENERS
-    const actionButtons = document.querySelectorAll("#actions button");
-    actionButtons.forEach(btn => {
-      btn.addEventListener("click", function() {
-        mainAction(this.textContent);
-      });
-    });
-    
-    // Global Game Timer (overall game)
-    setInterval(function(){
-      if (timer > 0) {
-        timer--;
-        updateStats();
-        if (timer <= 0) {
-          logAction("GAME OVER: Time's up! 🇺🇸");
-          actionButtons.forEach(btn => btn.disabled = true);
+
+        function startTimers() {
+            // Clear any existing timers first
+            if (gameState.gameInterval) clearInterval(gameState.gameInterval);
+            if (gameState.taskInterval) clearInterval(gameState.taskInterval);
+            
+            // Main game timer
+            gameState.gameInterval = setInterval(() => {
+                gameState.timer--;
+                if (gameState.timer <= 0) {
+                    endGame("⏰ Time's up! Your shift has ended.");
+                }
+                if (gameState.health <= 0) {
+                    endGame("💔 You ran out of health! The job was too much to handle.");
+                }
+                updateUI();
+            }, 1000);
+
+            // Delivery task timer
+            gameState.taskInterval = setInterval(() => {
+                gameState.taskTimer--;
+                if (gameState.taskTimer <= 0) {
+                    failDelivery();
+                }
+                updateUI();
+            }, 1000);
         }
-      }
-    }, 1000);
-    
-    // UTILITY FUNCTIONS
-    function updateStats() {
-      document.getElementById("health").textContent = health;
-      document.getElementById("cash").textContent = cash;
-      document.getElementById("level").textContent = level;
-      document.getElementById("timer").textContent = timer;
-      document.getElementById("progress").textContent = "Progress: " + deliveryCount + "/" + requiredDeliveryTasks +
-        " deliveries, " + healthyCount + "/" + requiredHealthyTasks + " healthy actions (" + (deliveryCount + healthyCount) + "/10 tasks)";
-    }
-    function updateObjective() {
-      document.getElementById("currentAddress").textContent = currentAddress;
-    }
-    function logAction(text) {
-      const li = document.createElement("li");
-      li.textContent = text;
-      document.getElementById("logList").appendChild(li);
-      document.getElementById("log").scrollTop = document.getElementById("log").scrollHeight;
-    }
-    function updateLevel() {
-      level = Math.floor(experience / 10) + 1;
-    }
-    function shuffleButtons() {
-      const container = document.getElementById("actions");
-      const buttons = Array.from(container.children);
-      for (let i = buttons.length - 1; i > 0; i--) {
-        const j = getRandomInt(0, i);
-        container.insertBefore(buttons[j], buttons[i]);
-      }
-    }
-    
-    // CUSTOM SCENARIOS
-    const customScenarios = {
-      "Deliver Mail": {
-        type: "delivery",
-        text: "Next: Deliver to [ADDRESS]. Choose the correct address:",
-        taskType: "delivery",
-        options: [] // Options are generated dynamically by showDeliveryPopup.
-      },
-      "Drink Water": {
-        text: "Time to hydrate! Choose your drink:",
-        taskType: "health",
-        options: [
-          { text: "Drink Water", effect: { health: +5, cash: +5, exp: +2 }, outcome: "You drink water and feel refreshed!", delivery: false },
-          { text: "Drink Soda", effect: { health: -5, cash: +10, exp: 0 }, outcome: "Soda tastes good but isn't as healthy.", delivery: false },
-          { text: "Drink Tequila", effect: { health: -15, cash: +20, exp: -1 }, outcome: "Tequila gives a buzz but hurts your health.", delivery: false },
-          { text: "Drink Beer", effect: { health: -10, cash: +15, exp: 0 }, outcome: "Beer gives a cash boost, but it's not ideal.", delivery: false }
-        ]
-      },
-      "Take Lunch Break": {
-        text: "It's lunchtime! Choose your meal:",
-        taskType: "health",
-        options: [
-          { text: "Eat a healthy meal", effect: { health: +10, cash: 0, exp: +3 }, outcome: "A healthy meal boosts your energy!", delivery: false },
-          { text: "Grab fast food", effect: { health: -5, cash: +10, exp: 0 }, outcome: "Fast food gives a cash boost but drains energy.", delivery: false },
-          { text: "Skip lunch", effect: { health: -15, cash: 0, exp: -1 }, outcome: "Skipping lunch makes you weak.", delivery: false }
-        ]
-      },
-      "Skip Delivery": {
-        text: "Do you want to skip your delivery?",
-        options: [
-          { text: "Skip Delivery", effect: { health: -10, cash: -10, exp: -2 }, outcome: "You skipped your delivery and lost reputation.", delivery: false },
-          { text: "Cancel Skip", effect: { health: +5, cash: 0, exp: +1 }, outcome: "You decide not to skip, staying on track.", delivery: false }
-        ]
-      },
-      "Drive Carefully": {
-        text: "How do you want to drive?",
-        options: [
-          { text: "Drive Carefully", effect: { health: +5, cash: +10, exp: +2 }, outcome: "Safe driving keeps you on schedule!", delivery: false },
-          { text: "Speed", effect: { health: -10, cash: +20, exp: +1 }, outcome: "Speeding gives extra cash but is risky.", delivery: false }
-        ]
-      },
-      "Return to Office": {
-        text: "Time to return to the office. How do you do it?",
-        options: [
-          { text: "Return on time", effect: { health: +5, cash: +5, exp: +3 }, outcome: "You return on time and impress your boss.", delivery: false },
-          { text: "Return late", effect: { health: -10, cash: -5, exp: -1 }, outcome: "Returning late incurs penalties.", delivery: false }
-        ]
-      },
-      "Play with Dog": {
-        text: "Your dog is waiting! How do you interact?",
-        taskType: "health",
-        options: [
-          { text: "Play with Dog", effect: { health: +10, cash: +5, exp: +3 }, outcome: "You play with your dog and boost your morale!", delivery: false },
-          { text: "Ignore Dog", effect: { health: -5, cash: 0, exp: -1 }, outcome: "Your dog feels neglected.", delivery: false }
-        ]
-      },
-      "Take a Drink": {
-        text: "You're offered a drink. What do you do?",
-        taskType: "health",
-        options: [
-          { text: "Refuse Drink", effect: { health: +5, cash: 0, exp: +2 }, outcome: "You refuse the drink and stay focused.", delivery: false },
-          { text: "Take Drink", effect: { health: -10, cash: +10, exp: -1 }, outcome: "You take the drink; it's fun but risky.", delivery: false },
-          { text: "Chug a Shot", effect: { health: -20, cash: +20, exp: -2 }, outcome: "You chug a shot; chaos ensues.", delivery: false }
-        ]
-      }
-    };
-    
-    // INITIAL SETUP
-    updateStats();
-    updateObjective();
-    shuffleButtons();
-    initUpcomingTasks();
-  </script>
+
+        function performAction(actionType) {
+            if (actionType === 'deliver') {
+                showDeliveryChallenge();
+                return;
+            }
+
+            if (actionType === 'dog') {
+                const currentTime = Date.now();
+                const timeSinceLastDog = currentTime - gameState.lastDogInteraction;
+                
+                // Prevent rapid clicking (must wait at least 10 seconds between interactions)
+                if (timeSinceLastDog < 10000 && gameState.lastDogInteraction !== 0) {
+                    addToLog("The dog needs a break! Try something else for now.");
+                    return;
+                }
+
+                gameState.lastDogInteraction = currentTime;
+                gameState.dogInteractions++;
+
+                // Different scenarios based on number of interactions
+                if (gameState.dogInteractions === 1) {
+                    // First interaction is always positive
+                    const healthGain = 10 + (Math.random() * 5);
+                    gameState.health += healthGain;
+                    gameState.tasks++;
+                    addToLog(`Played with a friendly dog: +${Math.floor(healthGain)} Health, +1 Task. Your spirit lifts!`);
+                } else if (gameState.dogInteractions === 2) {
+                    // Second interaction has a choice
+                    showTimedChoice(
+                        "The dog has a package in its mouth...",
+                        [
+                            { text: "Play fetch normally (+Health)", 
+                              effect: { health: 10, cash: 0, type: "good" }, 
+                              outcome: "A wholesome game of fetch brightens your day!" },
+                            { text: "Train dog to steal mail (+Cash)", 
+                              effect: { health: -10, cash: 30, type: "bad" }, 
+                              outcome: "The dog learns to bring you packages... this could be useful.",
+                              tempting: true }
+                        ],
+                        gameState.decisionTime,
+                        (choice) => {
+                            handleDogChoice(choice);
+                            if (choice.effect.type === "good") {
+                                gameState.tasks++;
+                            }
+                        }
+                    );
+                } else if (gameState.dogInteractions === 3) {
+                    // Third interaction is a temptation
+                    showTimedChoice(
+                        "The dog seems very well-trained now...",
+                        [
+                            { text: "Keep playing normally (+Health)", 
+                              effect: { health: 8, cash: 0, type: "good" }, 
+                              outcome: "Simple pleasures are sometimes the best." },
+                            { text: "Use dog as lookout (+Task, +Cash)", 
+                              effect: { health: -15, cash: 40, type: "bad" }, 
+                              outcome: "The dog will warn you of approaching supervisors...",
+                              tempting: true },
+                            { text: "Train dog pack (+Big Cash)", 
+                              effect: { health: -25, cash: 100, type: "bad" }, 
+                              outcome: "You now have a network of mail-stealing dogs!",
+                              tempting: true }
+                        ],
+                        gameState.decisionTime,
+                        (choice) => {
+                            handleDogChoice(choice);
+                            if (choice.effect.type === "good") {
+                                gameState.tasks++;
+                            }
+                        }
+                    );
+                } else {
+                    // Subsequent interactions are random events
+                    const events = [
+                        {
+                            text: "The dog brings you a suspicious package...",
+                            options: [
+                                { text: "Just play fetch (+Health)", 
+                                  effect: { health: 5, cash: 0, type: "good" }, 
+                                  outcome: "You ignore the temptation." },
+                                { text: "Check package contents (+Cash?)", 
+                                  effect: { health: -10, cash: 25, type: "bad" }, 
+                                  outcome: "Easy money, but at what cost?",
+                                  tempting: true }
+                            ]
+                        },
+                        {
+                            text: "The dog seems to know where valuable packages are...",
+                            options: [
+                                { text: "Regular playtime (+Health)", 
+                                  effect: { health: 5, cash: 0, type: "good" }, 
+                                  outcome: "A moment of peace in a corrupt world." },
+                                { text: "Follow the dog (+Cash)", 
+                                  effect: { health: -15, cash: 35, type: "bad" }, 
+                                  outcome: "The dog's nose for valuables pays off...",
+                                  tempting: true }
+                            ]
+                        }
+                    ];
+                    
+                    const event = events[Math.floor(Math.random() * events.length)];
+                    showTimedChoice(
+                        event.text,
+                        shuffleArray(event.options),
+                        gameState.decisionTime,
+                        (choice) => {
+                            handleDogChoice(choice);
+                            if (choice.effect.type === "good" && Math.random() < 0.3) {
+                                gameState.tasks++;
+                                addToLog("The wholesome interaction counts as a task!");
+                            }
+                        }
+                    );
+                }
+                
+                checkProgress();
+                updateUI();
+                return;
+            }
+
+            if (actionType === 'drink') {
+                const healthLoss = 15 + (gameState.level * 5);
+                const cashGain = 20 + (gameState.level * 10);
+                gameState.health -= healthLoss;
+                gameState.cash += cashGain;
+                addToLog(`Had a drink at the bar: -${healthLoss} Health, +$${cashGain}. The temptation grows...`);
+                
+                // Chance for a drinking-related event
+                if (Math.random() < 0.4) {
+                    showTemptation();
+                }
+                return;
+            }
+
+            if (actionType === 'skip') {
+                // Harsh penalties for skipping
+                const skipPenalty = 15 + (gameState.level * 5);
+                const healthPenalty = 10 + (gameState.level * 3);
+                gameState.health -= healthPenalty;
+                gameState.cash -= skipPenalty;
+                addToLog(`Skipped delivery: -$${skipPenalty}, -${healthPenalty} Health. Your reputation suffers...`);
+                completeDelivery();
+                
+                // Random chance of supervisor confrontation
+                if (Math.random() < 0.4) {
+                    showTimedChoice(
+                        "Your supervisor noticed the skipped delivery...",
+                        [
+                            { text: "Make excuses (-Health)", effect: { health: -10, cash: 0, type: "none" }, outcome: "He doesn't believe you..." },
+                            { text: "Apologize (-Cash)", effect: { health: 0, cash: -20, type: "none" }, outcome: "It'll come out of your paycheck..." },
+                            { text: "Threaten him (+Cash, -Health)", effect: { health: -20, cash: 30, type: "bad" }, outcome: "He backs down, but at what cost?", tempting: true }
+                        ],
+                        gameState.decisionTime,
+                        handleTemptationChoice
+                    );
+                }
+                return;
+            }
+
+            if (actionType === 'return') {
+                // Early return consequences
+                const totalDeliveries = LEVELS[gameState.level].deliveries;
+                const totalTasks = LEVELS[gameState.level].tasks;
+                const completionPercent = ((gameState.deliveries / totalDeliveries) + (gameState.tasks / totalTasks)) * 50;
+                
+                showTimedChoice(
+                    `Return to office early? (${Math.floor(completionPercent)}% complete)\nThis will end your shift immediately!`,
+                    [
+                        { text: "Return anyway", effect: { type: "return" }, outcome: "Shift ended early..." },
+                        { text: "Keep working", effect: { type: "continue" }, outcome: "Back to work..." }
+                    ],
+                    gameState.decisionTime,
+                    (choice) => {
+                        if (choice.effect.type === "return") {
+                            // Apply harsh penalties and end game
+                            gameState.cash = Math.floor(gameState.cash * (completionPercent / 100));
+                            gameState.health -= 30;
+                            endGame("Returned to office early. Management is disappointed...");
+                        }
+                        hideModal();
+                    }
+                );
+                return;
+            }
+
+            // Increase temptation chance based on low cash or health
+            let temptationChance = 0.3;
+            if (gameState.cash < 30) temptationChance += 0.2;
+            if (gameState.health < 50) temptationChance += 0.2;
+
+            if (Math.random() < temptationChance) {
+                if (Math.random() < 0.5) {
+                    showTemptation();
+                } else {
+                    addRandomEvent();
+                }
+                return;
+            }
+
+            const levelConfig = LEVELS[gameState.level];
+            const action = levelConfig.actions[actionType];
+
+            if (!action) {
+                console.error(`Unknown action: ${actionType}`);
+                return;
+            }
+
+            gameState.health += action.health;
+            gameState.cash += action.reward;
+
+            if (action.type === "delivery") {
+                completeDelivery();
+            } else if (action.type === "task") {
+                gameState.tasks++;
+            }
+
+            addToLog(`${actionType}: Health ${action.health > 0 ? "+" : ""}${action.health}, Cash ${action.reward > 0 ? "+" : ""}$${action.reward}`);
+            checkProgress();
+            updateUI();
+        }
+
+        function showDeliveryChallenge() {
+            const correctAddress = gameState.currentAddress;
+            const [number, ...streetParts] = correctAddress.split(" ");
+            const streetBase = streetParts.slice(0, -1).join(" ");
+            const streetType = streetParts[streetParts.length - 1];
+            
+            // Generate extremely similar addresses
+            const similarAddresses = [
+                `${number} ${streetBase} ${getRandomStreetType(streetType)}`,
+                `${parseInt(number) + 2} ${streetBase} ${streetType}`,
+                `${number} ${getSlightlyModifiedStreet(streetBase)} ${streetType}`
+            ];
+            
+            // Base criminal rewards on level and player state
+            const baseReward = 50 + (gameState.level * 30);
+            const desperation = (100 - gameState.health) + (50 - gameState.cash);
+            const bonusReward = Math.floor(desperation * 1.2);
+
+            // Create options array with correct address and criminal choices
+            const options = [
+                { text: correctAddress, 
+                  effect: { health: 5, cash: 15, type: "delivery" }, 
+                  outcome: "Perfect delivery! But the temptation grows..." }
+            ];
+
+            // Add wrong addresses
+            similarAddresses.forEach(addr => {
+                options.push({
+                    text: addr,
+                    effect: { health: -10, cash: -10, type: "none" },
+                    outcome: "Wrong address! The honest path feels harder..."
+                });
+            });
+
+            // Add criminal options for ALL levels (including Level 1)
+            const criminalOptions = [
+                { text: `"Lose" the package (+$${baseReward})`,
+                  effect: { health: -15, cash: baseReward, type: "bad" },
+                  outcome: "Easy money... The first step into darkness.",
+                  tempting: true },
+                { text: `Sell package contents (+$${baseReward + bonusReward})`,
+                  effect: { health: -20, cash: baseReward + bonusReward, type: "bad" },
+                  outcome: "The money feels good... Maybe being bad isn't so wrong?",
+                  tempting: true }
+            ];
+
+            // Add more serious criminal options for higher levels
+            if (gameState.level >= 2) {
+                criminalOptions.push(
+                    { text: `Sell to identity thieves (+$${baseReward * 2})`,
+                      effect: { health: -30, cash: baseReward * 2, type: "bad" },
+                      outcome: "You're part of something bigger now...",
+                      tempting: true }
+                );
+            }
+            if (gameState.level === 3) {
+                criminalOptions.push(
+                    { text: `Start a mail theft empire (+$${baseReward * 3})`,
+                      effect: { health: -40, cash: baseReward * 3, type: "bad" },
+                      outcome: "Power. Control. Money. Everything you deserve...",
+                      tempting: true }
+                );
+            }
+
+            // Add criminal options to the choices
+            options.push(...criminalOptions);
+
+            // Show choices with shuffled options
+            showTimedChoice(
+                `Choose your path...\n\nCorrect Delivery: +Health, +$15\nWrong Delivery: -Health, -$10\n\nOr give in to darker temptations...\nThe criminal path is always more profitable...`,
+                shuffleArray(options),
+                gameState.decisionTime,
+                handleDeliveryChoice
+            );
+        }
+
+        function getRandomStreetType(current) {
+            const types = ['St', 'Ave', 'Dr', 'Ct', 'Ln', 'Circle', 'Blvd', 'Place', 'Road'];
+            let available = types.filter(t => t !== current);
+            return available[Math.floor(Math.random() * available.length)];
+        }
+
+        function getSlightlyModifiedStreet(street) {
+            // Slightly modify street name to be very similar
+            const modifications = {
+                'Irving': ['Irwing', 'Erving', 'Irvine'],
+                'Washington': ['Washingten', 'Washinton', 'Washenton'],
+                'Oak': ['Oake', 'Oke', 'Oaks'],
+                'Maple': ['Mapel', 'Maples', 'Mapple']
+            };
+            
+            for (let [original, variants] of Object.entries(modifications)) {
+                if (street.includes(original)) {
+                    return street.replace(original, variants[Math.floor(Math.random() * variants.length)]);
+                }
+            }
+            return street;
+        }
+
+        function showTemptation() {
+            const temptation = TEMPTATIONS[Math.floor(Math.random() * TEMPTATIONS.length)];
+            showTimedChoice(
+                temptation.text,
+                shuffleArray(temptation.options),
+                gameState.decisionTime,
+                handleTemptationChoice
+            );
+        }
+
+        function showTimedChoice(text, options, time, callback) {
+            // Clear any existing timer
+            if (gameState.decisionTimer) {
+                clearInterval(gameState.decisionTimer);
+                gameState.decisionTimer = null;
+            }
+
+            const modal = document.getElementById("modal");
+            const modalText = document.getElementById("modal-text");
+            const modalOptions = document.getElementById("modal-options");
+            const timerDisplay = document.getElementById("decision-time");
+
+            modalText.textContent = text;
+            modalOptions.innerHTML = "";
+            
+            options.forEach(option => {
+                const button = document.createElement("button");
+                button.className = "modal-option";
+                if (option.tempting) {
+                    button.classList.add("tempting-choice");
+                }
+                button.textContent = option.text;
+                button.onclick = () => {
+                    if (gameState.decisionTimer) {
+                        clearInterval(gameState.decisionTimer);
+                        gameState.decisionTimer = null;
+                    }
+                    callback(option);
+                };
+                modalOptions.appendChild(button);
+            });
+
+            modal.style.display = "flex";
+            
+            let timeLeft = time;
+            timerDisplay.textContent = timeLeft;
+
+            gameState.decisionTimer = setInterval(() => {
+                timeLeft--;
+                timerDisplay.textContent = timeLeft;
+                if (timeLeft <= 0) {
+                    if (gameState.decisionTimer) {
+                        clearInterval(gameState.decisionTimer);
+                        gameState.decisionTimer = null;
+                    }
+                    handleTimeout();
+                }
+            }, 1000);
+        }
+
+        function handleTimeout() {
+            clearInterval(gameState.decisionTimer);
+            gameState.health -= 15;
+            gameState.cash -= 10;
+            
+            if (gameState.health === 100 && gameState.cash === 50) {
+                // We're at the start menu
+                gameState.showOriginStory = true;
+                startOriginStory();
+            } else {
+                addToLog("You hesitated! Lost health and cash.");
+                hideModal();
+                updateUI();
+            }
+        }
+
+        function handleDeliveryChoice(choice) {
+            clearInterval(gameState.decisionTimer);
+            gameState.health += choice.effect.health;
+            gameState.cash += choice.effect.cash;
+            
+            if (choice.effect.type === "delivery") {
+                completeDelivery();
+            }
+            if (choice.effect.type === "bad") {
+                gameState.badChoices++;
+            }
+
+            addToLog(choice.outcome);
+            hideModal();
+            updateUI();
+        }
+
+        function handleTemptationChoice(choice) {
+            clearInterval(gameState.decisionTimer);
+            gameState.health += choice.effect.health;
+            gameState.cash += choice.effect.cash;
+            
+            if (choice.effect.type === "bad") {
+                gameState.badChoices++;
+            } else {
+                gameState.goodChoices++;
+            }
+
+            addToLog(choice.outcome);
+            hideModal();
+            updateUI();
+        }
+
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        function completeDelivery() {
+            gameState.deliveries++;
+            gameState.taskTimer = 30;
+            gameState.currentLevelDeliveries.shift();
+            
+            // If we still have deliveries in the current level
+            if (gameState.currentLevelDeliveries.length > 0) {
+                gameState.currentAddress = gameState.currentLevelDeliveries[0];
+            }
+            
+            // Debug log for delivery completion
+            console.log(`Delivery completed! Total: ${gameState.deliveries}`);
+            
+            updateUpcomingDeliveries();
+            checkProgress(); // Check progress after completing delivery
+        }
+
+        function failDelivery() {
+            gameState.health -= 15;
+            gameState.cash -= 10;
+            addToLog("Delivery failed! Lost 15 Health and $10");
+            completeDelivery();
+        }
+
+        function checkProgress() {
+            const levelConfig = LEVELS[gameState.level];
+            
+            // Debug log to check progress
+            console.log(`Checking progress - Level: ${gameState.level}, Deliveries: ${gameState.deliveries}/${levelConfig.deliveries}, Tasks: ${gameState.tasks}/${levelConfig.tasks}`);
+            
+            if (gameState.deliveries >= levelConfig.deliveries && 
+                gameState.tasks >= levelConfig.tasks) {
+                
+                // Debug log for level completion
+                console.log(`Level ${gameState.level} completed!`);
+                
+                if (gameState.level < 3) {
+                    // Clear existing timers before level up
+                    clearInterval(gameState.gameInterval);
+                    clearInterval(gameState.taskInterval);
+                    
+                    // Initialize new deliveries before level up
+                    initializeDeliveries();
+                    levelUp();
+                } else {
+                    // Successfully completed all levels
+                    endGame("🎉 Congratulations! You've completed all levels! Your journey from mailman to legend is complete!");
+                }
+            }
+        }
+
+        function levelUp() {
+            gameState.level++;
+            gameState.deliveries = 0;
+            gameState.tasks = 0;
+            gameState.timer += LEVELS[gameState.level].timeBonus;
+            
+            // Debug log for level up
+            console.log(`Leveling up to ${gameState.level}!`);
+            
+            // Show new delivery list for memorization before starting next level
+            showTimedChoice(
+                `🎉 LEVEL ${gameState.level} UNLOCKED! 🎉\n\n🚨 MEMORIZE THESE ADDRESSES! 🚨\n\n${gameState.currentLevelDeliveries.join(" → ")}\n\nYou have 10 seconds to memorize.\nThe criminal path grows stronger...\n\nTime Bonus: +${LEVELS[gameState.level].timeBonus}s\nDeliveries Required: ${LEVELS[gameState.level].deliveries}\nTasks Required: ${LEVELS[gameState.level].tasks}`,
+                [{ text: "I'm Ready!", effect: { type: "start" }, outcome: "Starting next level..." }],
+                10,
+                () => {
+                    hideModal();
+                    // Restart timers for new level
+                    startTimers();
+                    updateButtons();
+                    updateDeliveryListVisibility();
+                    addToLog(`🌟 Advanced to Level ${gameState.level}! The temptations grow stronger...`);
+                    updateUI();
+                }
+            );
+        }
+
+        function endGame(message) {
+            // Clear all timers
+            clearInterval(gameState.gameInterval);
+            clearInterval(gameState.taskInterval);
+            clearInterval(gameState.decisionTimer);
+            
+            const finalScore = gameState.cash + (gameState.health * 2);
+            const badnessRating = (gameState.badChoices / (gameState.badChoices + gameState.goodChoices)) * 100 || 0;
+            
+            let endingMessage = "";
+            if (badnessRating > 75) {
+                endingMessage = "You've become a true villain. The mail system was just the beginning of your criminal empire. The darkness didn't just consume you - you became the darkness.";
+            } else if (badnessRating > 50) {
+                endingMessage = "You walked the line between good and evil, taking what you wanted. Neither hero nor villain, you're a survivor in a corrupt world.";
+            } else {
+                endingMessage = "Against all odds, you maintained your integrity. The temptations were strong, but your will was stronger. There's hope for this city yet.";
+            }
+            
+            showModal(
+                `${message}\n\nFinal Score: ${finalScore}\nHealth: ${gameState.health}\nCash: $${gameState.cash}\n\nLevel Reached: ${gameState.level}/3\nDeliveries Made: ${gameState.deliveries}\nTasks Completed: ${gameState.tasks}\nBad Choices: ${gameState.badChoices}\nGood Choices: ${gameState.goodChoices}\n\n${endingMessage}`,
+                [{ text: "Back to Main Menu", action: () => {
+                    hideModal();
+                    document.getElementById("game-content").style.display = "none";
+                    document.getElementById("main-menu").style.display = "block";
+                    showStartMenu(); // Show the full start menu with both options
+                }}]
+            );
+        }
+
+        function showModal(message, options) {
+            const modal = document.getElementById("modal");
+            const modalText = document.getElementById("modal-text");
+            const modalOptions = document.getElementById("modal-options");
+
+            modalText.textContent = message;
+            modalOptions.innerHTML = "";
+            
+            options.forEach(option => {
+                const button = document.createElement("button");
+                button.className = "modal-option";
+                button.textContent = option.text;
+                button.onclick = option.action;
+                modalOptions.appendChild(button);
+            });
+
+            modal.style.display = "flex";
+        }
+
+        function hideModal() {
+            document.getElementById("modal").style.display = "none";
+        }
+
+        function updateUI() {
+            document.getElementById("health").textContent = gameState.health;
+            document.getElementById("cash").textContent = gameState.cash;
+            document.getElementById("level").textContent = gameState.level;
+            document.getElementById("timer").textContent = gameState.timer;
+            document.getElementById("deliveries").textContent = gameState.deliveries;
+            document.getElementById("tasks").textContent = gameState.tasks;
+            document.getElementById("current-address").textContent = gameState.currentAddress;
+            document.getElementById("task-timer").textContent = gameState.taskTimer;
+            document.getElementById("required-deliveries").textContent = LEVELS[gameState.level].deliveries;
+            document.getElementById("required-tasks").textContent = LEVELS[gameState.level].tasks;
+        }
+
+        function updateUpcomingDeliveries() {
+            document.getElementById("upcoming-list").textContent = gameState.currentLevelDeliveries.join(" → ");
+        }
+
+        function addToLog(message) {
+            const log = document.getElementById("game-log");
+            const entry = document.createElement("div");
+            entry.className = "log-entry";
+            entry.textContent = message;
+            log.insertBefore(entry, log.firstChild);
+        }
+
+        function addRandomEvent() {
+            const events = [...CHAOS_EVENTS, ...TEMPTATIONS];
+            const event = events[Math.floor(Math.random() * events.length)];
+            showTimedChoice(
+                event.text,
+                shuffleArray(event.options),
+                gameState.decisionTime,
+                handleTemptationChoice
+            );
+        }
+
+        function checkTaskList() {
+            const penalty = 10 + (gameState.level * 5);
+            const healthLoss = 5 + (gameState.level * 2);
+            
+            gameState.cash -= penalty;
+            gameState.health -= healthLoss;
+            
+            // Show delivery list in a modal instead of in-place
+            showModal(
+                `📝 DELIVERY LIST (MEMORIZE QUICKLY!):\n\n${gameState.currentLevelDeliveries.join(" → ")}\n\nPenalty paid: -$${penalty}, -${healthLoss} Health`,
+                [{ text: "I've Memorized It", action: () => {
+                    hideModal();
+                    addToLog(`Checked address book: -$${penalty}, -${healthLoss} Health. The honest path feels harder...`);
+                    updateUI();
+                    
+                    // Increase temptation after checking
+                    if (Math.random() < 0.4) {
+                        setTimeout(() => {
+                            showTemptation();
+                        }, 500);
+                    }
+                }}]
+            );
+        }
+
+        function updateDeliveryListVisibility() {
+            const upcomingTasks = document.getElementById("upcoming-tasks");
+            const upcomingList = document.getElementById("upcoming-list");
+            
+            // Always hide the list initially
+            upcomingList.style.display = "none";
+            
+            if (gameState.level === 1) {
+                // Level 1: Allow checking the list without penalty
+                upcomingTasks.onclick = () => {
+                    showModal(
+                        `📝 Current Delivery List:\n\n${gameState.currentLevelDeliveries.join(" → ")}`,
+                        [{ text: "Got it!", action: hideModal }]
+                    );
+                };
+                upcomingTasks.style.cursor = "pointer";
+                upcomingTasks.title = "Click to view delivery list (Level 1: Free to check)";
+            } else {
+                // Level 2-3: Show with penalty
+                upcomingTasks.onclick = () => {
+                    const penalty = 10 + (gameState.level * 5);
+                    const healthLoss = 5 + (gameState.level * 2);
+                    
+                    showTimedChoice(
+                        `⚠️ Checking the delivery list will cost:\n-$${penalty}\n-${healthLoss} Health\n\nAre you sure?`,
+                        [
+                            { text: "Yes, show me (-$$$)", 
+                              effect: { type: "show", health: -healthLoss, cash: -penalty }, 
+                              outcome: "Checking list..." },
+                            { text: "No, I'll try to remember", 
+                              effect: { type: "cancel" }, 
+                              outcome: "Cancelled" }
+                        ],
+                        gameState.decisionTime,
+                        (choice) => {
+                            if (choice.effect.type === "show") {
+                                gameState.health += choice.effect.health;
+                                gameState.cash += choice.effect.cash;
+                                showModal(
+                                    `📝 DELIVERY LIST:\n\n${gameState.currentLevelDeliveries.join(" → ")}\n\nPenalty paid: -$${penalty}, -${healthLoss} Health`,
+                                    [{ text: "I've Memorized It", action: hideModal }]
+                                );
+                                addToLog(`Checked address list: -$${penalty}, -${healthLoss} Health`);
+                                updateUI();
+                                
+                                // Chance for temptation after checking
+                                if (Math.random() < 0.4) {
+                                    setTimeout(showTemptation, 500);
+                                }
+                            }
+                            hideModal();
+                        }
+                    );
+                };
+                upcomingTasks.style.cursor = "pointer";
+                upcomingTasks.title = "Click to view delivery list (Costs money and health)";
+            }
+        }
+
+        function handleDogChoice(choice) {
+            gameState.health += choice.effect.health;
+            gameState.cash += choice.effect.cash;
+            
+            if (choice.effect.type === "bad") {
+                gameState.badChoices++;
+            } else {
+                gameState.goodChoices++;
+            }
+            
+            addToLog(choice.outcome);
+            hideModal();
+            updateUI();
+        }
+
+        // Dynamic button configurations for different levels
+        const LEVEL_BUTTONS = {
+            1: [
+                { action: 'deliver', text: 'Deliver Mail 🇺🇸' },
+                { action: 'water', text: 'Drink Water (+Health)' },
+                { action: 'lunch', text: 'Take Lunch (+Health)' },
+                { action: 'skip', text: 'Skip Delivery' },
+                { action: 'dog', text: 'Play with Dog (+Task)' },
+                { action: 'return', text: 'Return to Office' },
+                { action: 'rest', text: 'Take Break (+Health)' },
+                { action: 'organize', text: 'Organize Bag (+Task)' },
+                { action: 'exercise', text: 'Quick Exercise (+Health)' }
+            ],
+            2: [
+                { action: 'deliver', text: 'Deliver Mail 🇺🇸' },
+                { action: 'steal', text: 'Steal Package (+Cash)' },
+                { action: 'water', text: 'Drink Water (+Health)' },
+                { action: 'dog', text: 'Play with Dog (+Task)' },
+                { action: 'drink', text: 'Visit Bar (+Cash)' },
+                { action: 'skip', text: 'Skip Delivery' },
+                { action: 'lunch', text: 'Take Lunch (+Health)' },
+                { action: 'bribe', text: 'Bribe Customer' },
+                { action: 'exercise', text: 'Quick Exercise (+Health)' }
+            ],
+            3: [
+                { action: 'deliver', text: 'Deliver Mail 🇺🇸' },
+                { action: 'scam', text: 'Run Mail Scam (+Big Cash)' },
+                { action: 'water', text: 'Drink Water (+Health)' },
+                { action: 'dog', text: 'Play with Dog (+Task)' },
+                { action: 'drink', text: 'Visit Bar (+Cash)' },
+                { action: 'skip', text: 'Skip Delivery' },
+                { action: 'lunch', text: 'Take Lunch (+Health)' },
+                { action: 'crime', text: 'Join Crime Ring' },
+                { action: 'exercise', text: 'Quick Exercise (+Health)' }
+            ]
+        };
+
+        function updateButtons() {
+            const actionsDiv = document.getElementById("actions");
+            actionsDiv.innerHTML = "";
+            
+            // Get all buttons for the current level
+            const buttons = shuffleArray([...LEVEL_BUTTONS[gameState.level]]);
+            
+            // Ensure at least 9 buttons are shown (3x3 grid)
+            while (buttons.length < 9) {
+                buttons.push(buttons[Math.floor(Math.random() * buttons.length)]);
+            }
+            
+            buttons.forEach(button => {
+                const btn = document.createElement("button");
+                btn.textContent = button.text;
+                if (button.action === 'check') {
+                    btn.onclick = checkTaskList;
+                } else {
+                    btn.onclick = () => performAction(button.action);
+                }
+                // Add American flag-themed hover effect
+                btn.onmouseover = () => {
+                    btn.style.background = '#3c3b6e';
+                    btn.style.borderColor = '#b22234';
+                };
+                btn.onmouseout = () => {
+                    btn.style.background = '#b22234';
+                    btn.style.borderColor = '#b22234';
+                };
+                actionsDiv.appendChild(btn);
+            });
+        }
+
+        // Initialize game
+        window.onload = showStartMenu;
+    </script>
 </body>
-</html>
+</html> 
