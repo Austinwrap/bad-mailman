@@ -946,50 +946,36 @@ Choose...`,
         function checkProgress() {
             const levelConfig = LEVELS[gameState.level];
             
-            // Debug log to check progress
-            console.log(`Progress Check - Level: ${gameState.level}, Deliveries: ${gameState.deliveries}/${levelConfig.deliveries}, Tasks: ${gameState.tasks}/${levelConfig.tasks}`);
-            
             if (gameState.deliveries >= levelConfig.deliveries && 
                 gameState.tasks >= levelConfig.tasks) {
                 
                 if (gameState.level < 3) {
-                    // Clear existing timers
-                    if (gameState.gameInterval) clearInterval(gameState.gameInterval);
-                    if (gameState.taskInterval) clearInterval(gameState.taskInterval);
-                    if (gameState.decisionTimer) clearInterval(gameState.decisionTimer);
-                    
-                    // Reset task types for new level
-                    gameState.completedTaskTypes.clear();
-                    
                     levelUp();
                 } else {
-                    endGame("🎉 Congratulations! You've completed all levels! Your journey from mailman to legend is complete!");
+                    endGame("🎉 Game Complete!");
                 }
             }
         }
 
         function levelUp() {
-            cleanupGameState();  // Clean up before level up
-            vibrateDevice(200);
             gameState.level++;
             gameState.deliveries = 0;
             gameState.tasks = 0;
             gameState.timer += LEVELS[gameState.level].timeBonus;
             gameState.completedTaskTypes.clear();
             
-            // Initialize new level
             initializeDeliveries();
             
             showTimedChoice(
-                `🎉 LEVEL ${gameState.level} UNLOCKED! 🎉\n\n🚨 MEMORIZE THESE ADDRESSES! 🚨\n\n${gameState.currentLevelDeliveries.join(" → ")}\n\nYou have 10 seconds to memorize.\nThe criminal path grows stronger...\n\nTime Bonus: +${LEVELS[gameState.level].timeBonus}s\nDeliveries Required: ${LEVELS[gameState.level].deliveries}\nTasks Required: ${LEVELS[gameState.level].tasks}`,
-                [{ text: "I'm Ready!", effect: { type: "start" }, outcome: "Starting next level..." }],
+                `🎉 LEVEL ${gameState.level}\n\n${gameState.currentLevelDeliveries.join(" → ")}`,
+                [{ text: "Continue", effect: { type: "start" }, outcome: "Starting..." }],
                 10,
                 () => {
                     hideModal();
                     startTimers();
                     updateButtons();
                     updateDeliveryListVisibility();
-                    addToLog(`🌟 Advanced to Level ${gameState.level}! The temptations grow stronger...`);
+                    addToLog(`Level ${gameState.level}`);
                     updateUI();
                     saveGameState();
                 }
@@ -997,37 +983,18 @@ Choose...`,
         }
 
         function endGame(message) {
-            cleanupGameState();  // Clean up before ending
+            cleanupGameState();
             
             const finalScore = Math.floor(gameState.cash + (gameState.health * 2));
-            const badnessRating = Math.floor((gameState.badChoices / (gameState.badChoices + gameState.goodChoices)) * 100) || 0;
-            
-            let endingMessage = "";
-            if (badnessRating > 75) {
-                endingMessage = "You've become a true villain. The mail system was just your first step into darkness.";
-            } else if (badnessRating > 50) {
-                endingMessage = "You walked the line between good and evil, taking what you needed to survive.";
-            } else {
-                endingMessage = "Against all odds, you maintained your integrity. Your will was stronger than temptation.";
-            }
-            
-            const characterEmoji = gameState.character === "Andrew" ? "👨🏼" : 
-                                  gameState.character === "Dario" ? "👨🏾" : "👩🏼";
             
             showModal(
                 `${message}\n\n` +
-                `📊 FINAL RESULTS\n` +
-                `Character: ${characterEmoji} ${gameState.character}\n` +
-                `Level: ${gameState.level}/3\n` +
+                `📊 RESULTS\n` +
+                `${gameState.character} ${gameState.level}/3\n` +
                 `Score: ${finalScore}\n` +
                 `Health: ${Math.floor(gameState.health)}\n` +
-                `Cash: $${gameState.cash}\n\n` +
-                `📬 STATISTICS\n` +
-                `Deliveries: ${gameState.deliveries}\n` +
-                `Tasks: ${gameState.tasks}\n` +
-                `Good/Bad: ${gameState.goodChoices}/${gameState.badChoices}\n\n` +
-                `${endingMessage}`,
-                [{ text: "Return to Main Menu", action: () => {
+                `Cash: $${gameState.cash}`,
+                [{ text: "Main Menu", action: () => {
                     hideModal();
                     showStartMenu();
                 }}]
@@ -1366,34 +1333,25 @@ Choose...`,
         // New function to show character selection
         function showCharacterSelection() {
             const characters = [
-                { name: "Andrew", emoji: "👨🏼", description: "A determined mailman with a strong work ethic." },
-                { name: "Dario", emoji: "👨🏾", description: "A charismatic carrier with street smarts." },
-                { name: "Raeanne", emoji: "👩🏼", description: "A resourceful postal worker with quick wit." }
+                { name: "Andrew", emoji: "👨🏼" },
+                { name: "Dario", emoji: "👨🏾" },
+                { name: "Raeanne", emoji: "👩🏼" },
+                { name: "Wilbur", emoji: "👨🏿" }
             ];
 
-            const characterOptions = characters.map(char => ({
-                text: `${char.emoji} ${char.name}`,
-                effect: { type: "select", character: char.name },
-                outcome: `Selected ${char.name}`,
-                description: char.description
-            }));
-
             showModal(
-                "👤 SELECT YOUR CHARACTER\n\n" +
-                characters.map(char => 
-                    `${char.emoji} ${char.name}\n${char.description}\n`
-                ).join("\n"),
-                characterOptions.map(opt => ({
-                    text: opt.text,
+                "👤 SELECT CHARACTER",
+                characters.map(char => ({
+                    text: `${char.emoji} ${char.name}`,
                     action: () => {
-                        gameState.character = opt.effect.character;
+                        gameState.character = char.name;
                         hideModal();
                         if (gameState.showOriginStory) {
                             startOriginStory();
                         } else {
                             startGame();
                         }
-                        addToLog(`You are playing as ${opt.effect.character}!`);
+                        addToLog(`Playing as ${char.name}`);
                     }
                 }))
             );
