@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
@@ -241,19 +242,26 @@
             body {
                 font-size: 16px;
                 -webkit-tap-highlight-color: transparent;
-                overscroll-behavior: none;
+                overscroll-behavior: contain;
+                position: relative;
+                height: auto;
+                min-height: 100vh;
+                overflow-y: auto;
             }
             
             #game-container {
                 max-width: 100%;
                 margin: 10px;
                 padding: 10px;
-                touch-action: manipulation;
+                touch-action: pan-y pinch-zoom;
+                overflow-y: auto;
+                -webkit-overflow-scrolling: touch;
             }
             
             #actions {
                 grid-template-columns: repeat(2, 1fr);
                 gap: 8px;
+                margin-bottom: 20px;
             }
             
             button {
@@ -261,31 +269,32 @@
                 font-size: 1.1em;
                 min-height: 60px;
                 touch-action: manipulation;
+                margin-bottom: 5px;
             }
             
-            .modal-option {
-                margin: 8px;
-                padding: 15px;
-                min-height: 50px;
-                width: 90%;
-                max-width: 300px;
+            #modal {
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                max-height: 90vh;
+                overflow-y: auto;
+                -webkit-overflow-scrolling: touch;
             }
             
             #modal-content {
                 width: 90%;
                 max-width: 350px;
-                margin: 20px;
+                margin: 20px auto;
                 padding: 15px;
                 font-size: 1.1em;
-            }
-            
-            .stat-item {
-                font-size: 1em;
+                overflow-y: auto;
             }
             
             #game-log {
                 height: 120px;
                 font-size: 0.9em;
+                -webkit-overflow-scrolling: touch;
             }
             
             .welcome-title {
@@ -1635,11 +1644,9 @@ Choose...`,
         
         // Initialize mobile-specific features
         window.onload = function() {
-            // Prevent scrolling
-            document.body.style.overflow = 'hidden';
-            document.body.style.position = 'fixed';
-            document.body.style.width = '100%';
-            document.body.style.height = '100%';
+            // Remove the fixed positioning that was preventing scrolling
+            document.body.style.overflow = 'auto';
+            document.body.style.position = 'relative';
             
             // Load saved game if exists
             loadGameState();
