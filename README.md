@@ -221,6 +221,12 @@
             color: #3c3b6e;
             text-shadow: 2px 2px 6px #ff0000;
         }
+        .welcome-title {
+            font-family: 'Bubblegum Sans', cursive;
+            font-size: 2em;
+            color: #b22234;
+            text-shadow: 2px 2px 4px #ffffff;
+        }
     </style>
 </head>
 <body>
@@ -263,17 +269,96 @@
     </div>
 
     <script>
-        const ADDRESSES = [
-            "42 Irving St", "42 Irving Dr", "42 Irving Ave", "42 Irving Ct",
-            "44 Irving St", "44 Irving Dr", "44 Irving Ave", "44 Irving Ct",
-            "46 Irving St", "46 Irving Dr", "46 Irving Ave", "46 Irving Ct",
-            "101 Washington St", "101 Washington Ave", "101 Washington Blvd", "101 Washington Dr",
-            "103 Washington St", "103 Washington Ave", "103 Washington Blvd", "103 Washington Dr",
-            "220 Oak St", "220 Oak Ave", "220 Oak Ln", "220 Oak Circle",
-            "222 Oak St", "222 Oak Ave", "222 Oak Ln", "222 Oak Circle",
-            "335 Maple Dr", "335 Maple St", "335 Maple Ave", "335 Maple Ct",
-            "337 Maple Dr", "337 Maple St", "337 Maple Ave", "337 Maple Ct"
-        ];
+        // Location-specific addresses
+        const LOCATIONS = {
+            "Miami FL": [
+                "1234 Collins Ave, Miami FL",
+                "567 Ocean Dr, Miami FL",
+                "8901 Biscayne Blvd, Miami FL",
+                "2345 SW 8th St, Miami FL",
+                "6789 NW 7th Ave, Miami FL",
+                "101 Lincoln Rd, Miami FL",
+                "4321 Alton Rd, Miami FL",
+                "9999 NE 2nd Ave, Miami FL",
+                "3456 S Dixie Hwy, Miami FL",
+                "7890 Kendall Dr, Miami FL",
+                "1212 Washington Ave, Miami FL",
+                "1515 Brickell Ave, Miami FL",
+                "3030 Coral Way, Miami FL",
+                "5050 Flagler St, Miami FL",
+                "7777 Bird Rd, Miami FL"
+            ],
+            "Detroit MI": [
+                "123 Woodward Ave, Detroit MI",
+                "456 Gratiot Ave, Detroit MI",
+                "7890 Grand River Ave, Detroit MI",
+                "1010 Jefferson Ave E, Detroit MI",
+                "2345 Livernois Ave, Detroit MI",
+                "5678 Mack Ave, Detroit MI",
+                "8901 8 Mile Rd, Detroit MI",
+                "1212 Cass Ave, Detroit MI",
+                "3434 Warren Ave E, Detroit MI",
+                "5656 Michigan Ave, Detroit MI",
+                "7878 Harper Ave, Detroit MI",
+                "9090 Dexter Ave, Detroit MI",
+                "1111 Lafayette Blvd, Detroit MI",
+                "1313 Fort St, Detroit MI",
+                "1515 Van Dyke St, Detroit MI"
+            ],
+            "Bristol CT": [
+                "42 Irving St, Bristol CT",
+                "44 Irving Dr, Bristol CT",
+                "46 Irving Ave, Bristol CT",
+                "101 Washington St, Bristol CT",
+                "103 Washington Ave, Bristol CT",
+                "220 Oak St, Bristol CT",
+                "222 Oak Ln, Bristol CT",
+                "335 Maple Dr, Bristol CT",
+                "337 Maple St, Bristol CT",
+                "150 Pine St, Bristol CT",
+                "275 Farmington Ave, Bristol CT",
+                "88 North St, Bristol CT",
+                "120 Divinity St, Bristol CT",
+                "45 Birch St, Bristol CT",
+                "99 Riverside Ave, Bristol CT"
+            ],
+            "Las Vegas NV": [
+                "1234 Las Vegas Blvd S, Las Vegas NV",
+                "567 Fremont St, Las Vegas NV",
+                "8901 Sahara Ave, Las Vegas NV",
+                "2345 E Flamingo Rd, Las Vegas NV",
+                "6789 S Rainbow Blvd, Las Vegas NV",
+                "1010 N Rancho Dr, Las Vegas NV",
+                "4321 W Charleston Blvd, Las Vegas NV",
+                "9999 Spring Mountain Rd, Las Vegas NV",
+                "3456 S Decatur Blvd, Las Vegas NV",
+                "7890 E Tropicana Ave, Las Vegas NV",
+                "1212 S Eastern Ave, Las Vegas NV",
+                "1515 N Nellis Blvd, Las Vegas NV",
+                "3030 W Cheyenne Ave, Las Vegas NV",
+                "5050 S Maryland Pkwy, Las Vegas NV",
+                "7777 W Sahara Ave, Las Vegas NV"
+            ],
+            "Los Angeles CA": [
+                "1234 Sunset Blvd, Los Angeles CA",
+                "567 Hollywood Blvd, Los Angeles CA",
+                "8901 Wilshire Blvd, Los Angeles CA",
+                "2345 S Figueroa St, Los Angeles CA",
+                "6789 W Olympic Blvd, Los Angeles CA",
+                "1010 N Vermont Ave, Los Angeles CA",
+                "4321 S Western Ave, Los Angeles CA",
+                "9999 Venice Blvd, Los Angeles CA",
+                "3456 E 1st St, Los Angeles CA",
+                "7890 Melrose Ave, Los Angeles CA",
+                "1212 S La Brea Ave, Los Angeles CA",
+                "1515 N Alvarado St, Los Angeles CA",
+                "3030 W 6th St, Los Angeles CA",
+                "5050 S Broadway, Los Angeles CA",
+                "7777 Santa Monica Blvd, Los Angeles CA"
+            ]
+        };
+
+        let ADDRESSES = []; // Will be set based on selected location
 
         const ORIGIN_STORY = [
             "You were once a dedicated mailman, loved by your community.",
@@ -341,7 +426,8 @@
             completedTaskTypes: new Set(),
             deliveryOptions: new Set(),
             character: "",
-            isUnderInfluence: false
+            isUnderInfluence: false,
+            selectedLocation: "" // New property for location
         };
 
         const LEVELS = {
@@ -426,15 +512,57 @@
             }
         }
 
+        function showCharacterSelection() {
+            const characters = [
+                { name: "Andrew", emoji: "👨🏼" },
+                { name: "Dario", emoji: "👨🏾" },
+                { name: "Raeanne", emoji: "👩🏼" },
+                { name: "Wilbur", emoji: "👨🏿" }
+            ];
+            showModal(
+                "👤 SELECT CHARACTER",
+                characters.map(char => ({
+                    text: `${char.emoji} ${char.name}`,
+                    action: () => {
+                        gameState.character = char.name;
+                        hideModal();
+                        showLocationSelection();
+                    }
+                }))
+            );
+        }
+
+        function showLocationSelection() {
+            const locationOptions = Object.keys(LOCATIONS).map(location => ({
+                text: `📍 ${location}`,
+                action: () => {
+                    gameState.selectedLocation = location;
+                    ADDRESSES = LOCATIONS[location];
+                    hideModal();
+                    if (gameState.showOriginStory) startOriginStory();
+                    else startGame();
+                    addToLog(`Delivering in ${location}`);
+                }
+            }));
+            showModal(
+                "📬 CHOOSE YOUR DELIVERY LOCATION",
+                locationOptions
+            );
+        }
+
         function startGame() {
+            if (!gameState.selectedLocation) {
+                showLocationSelection();
+                return;
+            }
             cleanupGameState();
             resetGameState();
             document.getElementById("main-menu").style.display = "none";
             document.getElementById("game-content").style.display = "block";
             initializeDeliveries();
             showTimedChoice(
-                "📬 WELCOME TO BAD MAILMAN!\n\nYour goal: Make 3 deliveries and complete 3 tasks across 3 timed rounds.\n\nYou're trying to uphold the Mailman Creed, but old habits keep pulling you back...\n\nStay sharp, time's ticking!",
-                [{ text: "Let's Go!", effect: { type: "start" }, outcome: "Game on!" }],
+                `<h2 class="welcome-title">Bad Mailman</h2>\n\n📬 YOUR MISSION:\n- Make 3 deliveries per level\n- Complete 3 tasks per level\n- Survive 3 timed rounds\n\n💡 You’re a mailman fighting to stay true to the creed, but old habits (and temptations) keep creeping back!\n\n⏰ Time’s ticking—good luck!`,
+                [{ text: "Let’s Deliver!", effect: { type: "start" }, outcome: "Game on!" }],
                 20,
                 () => {
                     hideModal();
@@ -493,7 +621,8 @@
                 completedTaskTypes: new Set(),
                 deliveryOptions: new Set(),
                 character: gameState.character,
-                isUnderInfluence: false
+                isUnderInfluence: false,
+                selectedLocation: gameState.selectedLocation
             };
         }
 
@@ -553,10 +682,10 @@
                 return;
             }
             const correctAddress = gameState.currentAddress;
-            const [number, ...streetParts] = correctAddress.split(" ");
-            const streetBase = streetParts.slice(0, -1).join(" ");
-            const streetType = streetParts[streetParts.length - 1];
-            gameState.deliveryOptions.clear(); // Reset options
+            const [number, ...rest] = correctAddress.split(",")[0].split(" ");
+            const streetBase = rest.slice(0, -1).join(" ");
+            const streetType = rest[rest.length - 1];
+            gameState.deliveryOptions.clear();
             const similarAddresses = [];
             while (similarAddresses.length < 3) {
                 const newAddress = generateUniqueAddress(number, streetBase, streetType);
@@ -565,19 +694,17 @@
                     gameState.deliveryOptions.add(newAddress);
                 }
             }
-            // Explicitly include the correct address
             const baseReward = 80 + (gameState.level * 50);
             const options = [
                 { text: correctAddress, effect: { health: 5, cash: 15, type: "delivery" }, outcome: "Perfect delivery!" },
                 ...similarAddresses.map(addr => ({
-                    text: addr,
+                    text: addr + ", " + gameState.selectedLocation,
                     effect: { health: -10, cash: -10, type: "none" },
                     outcome: "Wrong address!"
                 })),
                 { text: `💰 "Lose" package (+$${baseReward})`, effect: { health: -15, cash: baseReward, badness: 15, type: "bad" }, outcome: "Easy money...", tempting: true },
                 { text: `💎 Sell contents (+$${baseReward + 50})`, effect: { health: -20, cash: baseReward + 50, badness: 20, type: "bad" }, outcome: "Profit!", tempting: true }
             ];
-            // Debug check
             if (!options.some(opt => opt.text === correctAddress)) {
                 console.error(`Correct address ${correctAddress} not in options!`, options);
                 addToLog("Error: Correct address missing!");
@@ -684,6 +811,7 @@
                 <p class="endgame-text">${message}</p>
                 <p class="endgame-text">📊 Your Results:</p>
                 <p class="endgame-text">Character: ${gameState.character}</p>
+                <p class="endgame-text">Location: ${gameState.selectedLocation}</p>
                 <p class="endgame-text">Ending: ${endingType}</p>
                 <p class="endgame-text">Level Reached: ${gameState.level}/3</p>
                 <p class="endgame-text">Final Score: ${finalScore}</p>
@@ -777,7 +905,7 @@
             const modalText = document.getElementById("modal-text");
             const modalOptions = document.getElementById("modal-options");
             const timerDisplay = document.getElementById("decision-time");
-            modalText.textContent = text;
+            modalText.innerHTML = text;
             modalOptions.innerHTML = "";
             if (gameState.isUnderInfluence && gameState.badness >= 50) {
                 modalText.classList.add("blurred-text");
@@ -1024,36 +1152,14 @@
             }
         }
 
-        function showCharacterSelection() {
-            const characters = [
-                { name: "Andrew", emoji: "👨🏼" },
-                { name: "Dario", emoji: "👨🏾" },
-                { name: "Raeanne", emoji: "👩🏼" },
-                { name: "Wilbur", emoji: "👨🏿" }
-            ];
-            showModal(
-                "👤 SELECT CHARACTER",
-                characters.map(char => ({
-                    text: `${char.emoji} ${char.name}`,
-                    action: () => {
-                        gameState.character = char.name;
-                        hideModal();
-                        if (gameState.showOriginStory) startOriginStory();
-                        else startGame();
-                        addToLog(`Playing as ${char.name}`);
-                    }
-                }))
-            );
-        }
-
-        function generateUniqueAddress(number, streetBase, currentType) {
-            const types = ['St', 'Ave', 'Dr', 'Ct', 'Ln', 'Circle', 'Blvd', 'Place', 'Road'];
+        function generateUniqueAddress(number, streetBase, streetType) {
+            const types = ['St', 'Ave', 'Dr', 'Ct', 'Ln', 'Cir', 'Blvd', 'Pl', 'Rd', 'Way', 'Pkwy', 'Terr', 'Plz', 'Hwy'];
             let address;
             do {
                 const randomType = types[Math.floor(Math.random() * types.length)];
                 const numberMod = Math.random() < 0.5 ? parseInt(number) + 2 : parseInt(number) - 2;
                 address = `${numberMod} ${streetBase} ${randomType}`;
-            } while (gameState.deliveryOptions.has(address));
+            } while (gameState.deliveryOptions.has(address) || ADDRESSES.includes(address));
             return address;
         }
 
@@ -1074,6 +1180,7 @@
                 const saved = localStorage.getItem('badMailmanState');
                 if (saved) {
                     gameState = JSON.parse(saved);
+                    ADDRESSES = LOCATIONS[gameState.selectedLocation] || LOCATIONS["Bristol CT"]; // Fallback
                     updateUI();
                 }
             } catch (e) {
